@@ -1,4 +1,3 @@
-/ansible
-/NOTE.md
-/README.md.old
-/terraform
+**/**.backup
+**/**.lock.hcl
+**/.terraform
