@@ -1,0 +1,61 @@
+formatter: "markdown table"
+
+version: "0.20.0"
+
+header-from: "./docs/_tfdocs/header.md"
+footer-from: "./docs/_tfdocs/footer.md"
+
+recursive:
+  enabled: true
+  path: ../_modules/
+  include-main: true
+
+sections:
+  hide: []
+  show: 
+    - header
+    - inputs
+    - modules
+    - outputs
+    - providers
+    - requirements
+    - footer
+
+output:
+  file: "README.md"
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: false
+
+content: |-
+  {{ .Header }}
+  {{ .Requirements }}
+  {{ .Providers }}
+  {{ .Inputs }}
+  {{ .Outputs }}
+  {{ .Modules }}
+  {{ .Footer }}
+  
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: false
+  escape: true
+  hide-empty: true
+  html: true
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: true
+  type: true
