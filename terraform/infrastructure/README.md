@@ -99,5 +99,5 @@ Maintained by [Astocanthus](https://github.com/Astocanthus) with ❤️
 See [CHANGELOG.md](./CHANGELOG.md) for detailed version history and breaking changes.
 
 ---
-**Note**: This project is actively maintained. For questions about enterprise support or custom implementations, please contact us at [support@your-org.com](mailto:contact@low-layer.com).
+**Note**: This project is actively maintained. For questions about enterprise support or custom implementations, please contact us at [contact@low-layer.com](mailto:contact@low-layer.com).
 <!-- END_TF_DOCS -->
