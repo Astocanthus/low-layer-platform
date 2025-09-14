@@ -1,0 +1,57 @@
+ Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Check if Python3 is installed
+# ============================================================================
+- name: Check if Python3 is already installed
+  # Run Python3 to see if it’s available on the target host
+  ansible.builtin.raw: python3 --version
+  register: python_check
+  ignore_errors: true
+
+# ============================================================================
+# Install Python3 if missing
+# ============================================================================
+- name: Install Python3 via rpm-ostree
+  # Install Python3 and pip via rpm-ostree only if not already present
+  ansible.builtin.raw: >
+    rpm-ostree install python3 python3-pip
+  register: install_result
+  changed_when: install_result.stdout is search("added")
+  failed_when: install_result.stderr is search("error") and not install_result.stderr is search("already requested")
+  when: python_check.rc != 0
+
+# ============================================================================
+# Reboot if necessary
+# ============================================================================
+- name: Reboot if necessary
+  # Reboot system to apply rpm-ostree changes
+  ansible.builtin.raw: systemctl reboot
+  when: python_check.rc != 0
+  async: 0
+  poll: 0
+
+# ============================================================================
+# Wait for system to come back
+# ============================================================================
+- name: Wait for SSH to come back
+  # Wait until SSH is available again on port 22
+  ansible.builtin.wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 22
+    timeout: 600
+    state: started
+  delegate_to: localhost
+  become: false
+
+# ============================================================================
+# Verify Python3 installation
+# ============================================================================
+- name: Verify Python3 after reboot
+  # Confirm that Python3 is installed and accessible after reboot
+  ansible.builtin.raw: python3 --version
+  register: python_check_after
+  ignore_errors: true

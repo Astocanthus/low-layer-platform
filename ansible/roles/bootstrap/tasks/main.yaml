@@ -1,0 +1,9 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+- name: Install python3
+  # Ensure Python3 and pip are installed on the target host
+  # Handles installation via rpm-ostree or package manager
+  ansible.builtin.include_tasks: python3.yml

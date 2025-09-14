@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: bootstrap
+################################################################################
+# Description :
+#   Default variables for the bootstrap role.
+#   Provide baseline configuration values used by tasks when no override is set.
+#
+# Usage :
+#   - Reference: {{ bootstrap_default_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+################################################################################
+
+---

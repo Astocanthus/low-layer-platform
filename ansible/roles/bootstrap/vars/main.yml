@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: bootstrap
+################################################################################
+# Description : 
+#   Internal variable used by the bootstrap role to store configuration 
+#   during playbook execution.
+#
+# Usage :
+#   - Reference: {{ bootstrap_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---
