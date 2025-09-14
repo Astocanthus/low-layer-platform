@@ -1,0 +1,22 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes nodes
+################################################################################
+
+# Assigns worker role label to the node
+kube_node_labels:
+  node-role.kubernetes.io/worker: ""
+
+# No taints configured; nodes are schedulable by default
+kube_node_taints: []
+
+# Vault templates to apply for this group
+kube_vault_templates:
+  - kubelet
+
+# Disable creation of Kubernetes encryption key pair service accounts
+kube_sa: false

@@ -1,0 +1,26 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Vault agent
+################################################################################
+
+# UID for the Vault agent user
+vault_agent_uid: 100
+
+# GID for the Vault agent user
+vault_agent_gid: 100
+
+# Vault server address
+vault_addr: "https://vault.internal"
+
+# Vault user for Kubernetes authentication
+vault_user: "kube-admin-oidc"
+
+# Password for the Vault user
+vault_pass: "password1"
+
+# Path to Kubernetes OIDC token in Vault
+vault_token_path: "identity/oidc/token/kubernetes-low-layer-oidc-token"

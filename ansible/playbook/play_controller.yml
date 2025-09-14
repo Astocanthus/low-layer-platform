@@ -1,0 +1,24 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+- name: Bootstrap controller hosts
+  # ========================================================================
+  # Controller node bootstrap
+  # ========================================================================
+  # Apply all roles necessary for Kubernetes controller nodes
+  # This includes high availability, secret management, API server, controller manager, scheduler, CNI, and kubelet
+  # Ensure that each component is installed and configured in the correct order
+  become: yes
+  gather_facts: yes
+  hosts: k8s-controller
+  roles:
+    - keepalived                  # Provides HA via virtual IP
+    - vault-agent                 # Manages certificates and encryption keys
+    - haproxy                     # Load balancer for API server
+    - kube-apiserver              # API server installation
+    - kube-controller-manager     # Manages controllers for Kubernetes objects
+    - kube-scheduler              # Schedules pods across nodes
+    - cni                         # Container networking configuration
+    - kubelet                     # Node agent, ensures pods run properly

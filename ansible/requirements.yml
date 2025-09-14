@@ -1,0 +1,20 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Ansible Collections Requirements
+################################################################################
+
+collections:
+ 
+  # General-purpose modules and plugins
+  - name: community.general
+    version: ">=7.0.0"
+    source: https://galaxy.ansible.com
+
+  # Kubernetes-specific modules and plugins
+  - name: kubernetes.core
+    version: ">=5.3.0"
+    source: https://galaxy.ansible.com

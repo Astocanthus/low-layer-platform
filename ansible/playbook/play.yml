@@ -1,0 +1,48 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Bootstrap all hosts
+# ============================================================================
+- name: Bootstrap hosts
+  # Apply initial setup tasks on all hosts
+  # Installs Python3, configures basic environment
+  # Run first to ensure all prerequisites are met
+  become: yes
+  gather_facts: no
+  hosts: all
+  roles:
+    - bootstrap
+
+# ============================================================================
+# Apply hardening
+# ============================================================================
+- name: Hardening hosts
+  # Apply security hardening tasks on all hosts
+  # Includes SELinux, firewall, and system security settings
+  # Must be executed after bootstrap
+  become: yes
+  gather_facts: yes
+  hosts: all
+  roles:
+    - hardening
+
+# ============================================================================
+# Install controller nodes
+# ============================================================================
+- name: "Install Master"
+  # Deploy Kubernetes controller nodes
+  # Includes core services like API server, controller manager, scheduler, networking and kubelet
+  # Run after hardening to ensure secure configuration
+  ansible.builtin.import_playbook: play_controller.yml
+
+# ============================================================================
+# Install worker nodes
+# ============================================================================
+- name: "Install Worker"
+  # Deploy Kubernetes worker nodes
+  # Includes networking (CNI), kubelet, and vault-agent for secret management
+  # Run after controller nodes are up
+  ansible.builtin.import_playbook: play_worker.yml

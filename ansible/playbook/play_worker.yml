@@ -1,0 +1,19 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+- name: Bootstrap worker hosts
+  # ========================================================================
+  # Worker node bootstrap
+  # ========================================================================
+  # Apply all roles necessary for Kubernetes worker nodes
+  # This includes secret management, networking (CNI), and kubelet
+  # Ensure that each component is installed and configured correctly
+  become: yes
+  gather_facts: yes
+  hosts: k8s-worker
+  roles:
+    - vault-agent        # Manages certificates and encryption keys
+    - cni                # Container networking configuration
+    - kubelet            # Node agent, ensures pods run properly

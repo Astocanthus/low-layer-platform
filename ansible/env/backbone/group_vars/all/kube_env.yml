@@ -1,0 +1,18 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes API, HAProxy, and Vault
+################################################################################
+
+# Virtual IP and FQDN for the internal Kubernetes API server
+vip_kube_api_server:
+  internal:
+    ip: 192.168.3.251
+    fqdn: "kube.low-layer.internal"
+
+# Kubernetes API server configuration
+kube_api_server:
+  port: 6443

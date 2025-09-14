@@ -1,0 +1,14 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# HAProxy configuration for Kubernetes API load balancer
+################################################################################
+
+# Health check settings for the API load balancer
+haproxy_config:
+  health_check_interval: "5s"   # Interval between health checks
+  health_check_rise: 2          # Number of successful checks before marking UP
+  health_check_fall: 3          # Number of failed checks before marking DOWN
