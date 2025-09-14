@@ -29,15 +29,6 @@
   with_items:
     - "/var/lib/vault-agent/certs/kubernetes"
 
-- name: Create PID directory for Vault Agent
-  # Directory for storing Vault Agent PID files
-  ansible.builtin.file:
-    path: "/var/run/vault-agent"
-    state: directory
-    owner: "{{ vault_agent_uid | int }}"
-    group: "{{ vault_agent_gid | int }}"
-    mode: '0750'
-
 # ============================================================================
 # Deploy Vault Agent configuration
 # ============================================================================
