@@ -1,0 +1,68 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Check current SELinux status
+# ============================================================================
+- name: Check current SELinux status
+  # Retrieve current SELinux mode on the target host
+  command: getenforce
+  register: selinux_status
+  changed_when: false
+
+- name: Display current status
+  # Output the current SELinux mode
+  debug:
+    msg: "SELinux is currently in mode: {{ selinux_status.stdout }}"
+
+# ============================================================================
+# Disable SELinux immediately (runtime)
+# ============================================================================
+- name: Disable SELinux immediately
+  # Set SELinux to permissive mode for the current session
+  # Only applied if not already permissive or disabled
+  command: setenforce 0
+  when: selinux_status.stdout != "Permissive" and selinux_status.stdout != "Disabled"
+  ignore_errors: true
+
+# ============================================================================
+# Permanently disable SELinux in config file
+# ============================================================================
+- name: Disable SELinux permanently in config file
+  # Update /etc/selinux/config to disable SELinux permanently
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+    backup: yes
+
+- name: Verify SELinux is disabled in config
+  # Check that SELinux is set to disabled in the config
+  # Run in check mode to prevent changes
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: "^SELINUX=disabled"
+    line: "SELINUX=disabled"
+    state: present
+  check_mode: yes
+  register: selinux_config_check
+
+- name: Confirm SELinux is disabled
+  # Display confirmation if SELinux config is already disabled
+  debug:
+    msg: "SELinux is now disabled in /etc/selinux/config. Will be fully disabled after next reboot."
+  when: not selinux_config_check.changed
+
+# ============================================================================
+# Show current runtime status after changes
+# ============================================================================
+- name: Check runtime status after changes
+  # Retrieve SELinux mode after changes
+  command: getenforce
+  register: selinux_final_status
+  changed_when: false
+
+- name: Display final runtime status
+  # Output final SELinux runtime status and confirm config is disabled
+  debug:
+    msg: "SELinux runtime status: {{ selinux_final_status.stdout }} | Config file: disabled"

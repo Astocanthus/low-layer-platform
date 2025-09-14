@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: hardening
+################################################################################
+# Description :
+#   Default variables for the hardening role.
+#   Provide baseline security configuration values for tasks.
+#
+# Usage :
+#   - Reference: {{ hardening_default_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+################################################################################
+
+---

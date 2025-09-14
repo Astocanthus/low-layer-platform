@@ -1,0 +1,9 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+- name: Configure SELinux
+  # Apply SELinux hardening tasks
+  # Includes runtime and permanent configuration changes
+  ansible.builtin.include_tasks: selinux.yaml
