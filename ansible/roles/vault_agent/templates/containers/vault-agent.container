@@ -1,0 +1,52 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+
+[Unit]
+Description=Vault Agent container
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/hashicorp/vault:1.15
+ContainerName=vault-agent
+
+# Network configuration
+Network=host
+
+# Capabilities
+AddCapability=IPC_LOCK
+AddCapability=CAP_SETFCAP
+AddCapability=CHOWN
+
+# Startup arguments
+Exec=agent -config=/vault/conf/agent.hcl
+
+# Volumes
+Volume=/etc/vault-agent/conf:/vault/conf:ro
+Volume=/etc/vault-agent/templates:/vault/templates:ro
+Volume=/var/lib/vault-agent/certs:/var/lib/vault-agent/certs:z
+Volume=/etc/pki/ca-trust/extracted/pem:/etc/pki/ca-trust/extracted/pem:ro
+Volume=/etc/ssl/certs:/etc/ssl/certs:ro
+# Volume=/etc/localtime:/etc/localtime:ro
+
+# Podman secrets mounted in /run/secrets
+Secret=vault-role-id,type=mount,target=/run/secrets/vault_role_id
+Secret=vault-secret-id,type=mount,target=/run/secrets/vault_secret_id
+
+# Security configuration
+PodmanArgs=--user=0:0 --entrypoint=vault
+NoNewPrivileges=false
+
+# Resource management
+Memory=1G
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=900
+TimeoutStopSec=70
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: vault_agent
+################################################################################
+# Description : 
+#   Internal variables used by the vault_agent role to store configuration 
+#   or state during playbook execution.
+#
+# Usage :
+#   - Reference: {{ vault_agent_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---

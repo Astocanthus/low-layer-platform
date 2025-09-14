@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: vault_agent
+################################################################################
+# Description :
+#   Default variables for the vault_agent role.
+#   Provide baseline configuration values used by tasks if no override is set.
+#
+# Usage :
+#   - Reference: {{ vault_agent_default_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+################################################################################
+
+---

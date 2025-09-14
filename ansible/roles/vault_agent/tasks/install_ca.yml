@@ -1,0 +1,26 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Deploy CA certificate
+# ============================================================================
+- name: "Deploy internal-CA certificate"
+  # Copy internal CA certificate to system trust store
+  ansible.builtin.copy:
+    src: internal-ca.crt
+    dest: /etc/pki/ca-trust/source/anchors/internal-ca.crt
+
+- name: "Deploy kube-CA certificate"
+  # Copy Kubernetes CA certificate to system trust store
+  ansible.builtin.copy:
+    src: kube-ca.crt
+    dest: /etc/pki/ca-trust/source/anchors/kube-ca.crt
+
+# ============================================================================
+# Extract certificates
+# ============================================================================
+- name: "Extract certificates"
+  # Update system CA trust
+  ansible.builtin.shell: update-ca-trust extract

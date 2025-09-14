@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+- name: Install Certificate Authorities for Vault Agent
+  # Include tasks to deploy internal and Kubernetes CA certificates on the host
+  ansible.builtin.include_tasks: install_ca.yml
+
+- name: Setup Vault Agent credentials
+  # Include tasks to create secrets (role-id, secret-id) in Podman for Vault Agent
+  ansible.builtin.include_tasks: credentials.yml
+
+- name: Configure Vault Agent
+  # Include tasks to configure Vault Agent directories, templates, and settings
+  ansible.builtin.include_tasks: configure.yml

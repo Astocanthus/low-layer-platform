@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Handlers for Vault Agent role
+################################################################################
+
+# ============================================================================
+# Vault Agent service
+# ============================================================================
+- name: Stop Vault Agent
+  # Stops the Vault Agent systemd service before reloading configuration
+  ansible.builtin.service:
+    name: vault-agent
+    state: stopped
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _stop
+  until: _stop is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart Vault Agent
+
+- name: Start Vault Agent
+  # Starts and enables the Vault Agent systemd service
+  ansible.builtin.service:
+    name: vault-agent
+    enabled: true
+    state: started
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _start
+  until: _start is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart Vault Agent
