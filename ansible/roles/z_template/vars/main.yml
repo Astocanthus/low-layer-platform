@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: z_template
+################################################################################
+# Description : 
+#   Internal variables used by the z_template role to store configuration 
+#   or state during playbook execution.
+#
+# Usage :
+#   - Reference: {{ z_template_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---

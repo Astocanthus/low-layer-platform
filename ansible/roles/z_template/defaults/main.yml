@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: z_template
+################################################################################
+# Description :
+#   Default variables for the z_template role.
+#   Provide baseline configuration values used by tasks if no override is set.
+#
+# Usage :
+#   - Reference: {{ z_template_default_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+################################################################################
+
+---
