@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Ensure HAProxy configuration directories
+# ============================================================================
+- name: Ensure sites config dirs are present
+  # Create required HAProxy configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/etc/haproxy/conf.d/"
+
+# ============================================================================
+# Configure non-local IP binding
+# ============================================================================
+- name: Configure non-local IP binding
+  # Enable binding to non-local IPs (required for HAProxy with virtual IP)
+  ansible.posix.sysctl:
+    name: "net.ipv4.ip_nonlocal_bind"
+    value: 1
+    sysctl_set: true
+    state: present
+    reload: true
+
+# ============================================================================
+# Deploy HAProxy Podman systemd unit
+# ============================================================================
+- name: Deploy Podman systemd unit for haproxy
+  # Deploy systemd unit for HAProxy container using Quadlet
+  ansible.builtin.template:
+    src: "containers/haproxy.container"
+    dest: "{{ quadlet_root_container_path }}/haproxy.container"
+  notify:
+    - Restart haproxy

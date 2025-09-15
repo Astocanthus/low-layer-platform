@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: haproxy
+################################################################################
+# Description : 
+#   Internal variable used by the haproxy role to store configuration 
+#   during playbook execution.
+#
+# Usage :
+#   - Reference: {{ haproxy_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---

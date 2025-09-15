@@ -1,0 +1,44 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd unit file for running HAProxy in a containerized environment.
+# This configuration ensures HAProxy starts with a merged configuration,
+# binds directly to host networking, and auto-restarts on failure.
+# ============================================================================
+
+[Unit]
+Description=HAProxy
+Documentation=https://docs.haproxy.org/3.2/configuration.html
+After=network.target haproxy.service
+Requires=haproxy.service
+
+[Container]
+Image=docker.io/haproxy:lts-alpine3.22
+ContainerName=haproxy
+
+# Merge all config fragments before launching HAProxy
+Exec=sh -c "cat /etc/haproxy/conf.d/*.cfg > /tmp/haproxy.cfg && haproxy -Ws -db -f /tmp/haproxy.cfg"
+
+# ============================================================================
+# Network
+# ============================================================================
+Network=host
+
+# ============================================================================
+# Volumes
+# ============================================================================
+Volume=/etc/haproxy/conf.d/:/etc/haproxy/conf.d/:ro
+
+# ============================================================================
+# Capabilities
+# ============================================================================
+# Allow binding to privileged ports (e.g., 80, 443)
+AddCapability=NET_BIND_SERVICE
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

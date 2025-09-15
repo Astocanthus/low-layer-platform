@@ -1,0 +1,34 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# HAProxy service
+# ============================================================================
+- name: Stop HAProxy
+  # Stops the HAProxy systemd service before reloading configuration
+  ansible.builtin.service:
+    name: haproxy
+    state: stopped
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _stop
+  until: _stop is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart haproxy
+
+- name: Start HAProxy
+  # Starts and enables the HAProxy systemd service
+  ansible.builtin.service:
+    name: haproxy
+    enabled: true
+    state: started
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _start
+  until: _start is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart haproxy

@@ -1,0 +1,9 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+- name: Configure HAProxy
+  # Apply HAProxy tasks
+  # Includes runtime and configurations
+  ansible.builtin.include_tasks: configure.yml
