@@ -79,7 +79,7 @@
 - name: Deploy Podman systemd unit for Vault Agent
   # Template systemd unit file to start Vault Agent container
   ansible.builtin.template:
-    src: containers/vault-agent.container
-    dest: /etc/containers/systemd/vault-agent.container
+    src: "containers/vault-agent.container"
+    dest: "{{ quadlet_root_container_path }}/vault-agent.container"
   notify:
     - Restart Vault Agent

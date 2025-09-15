@@ -2,6 +2,10 @@
 # Contact : contact@low-layer.com
 
 # ============================================================================
+# Systemd unit file for running HashiCorp Vault Agent as a quadlet container.
+# This setup allows Vault Agent to authenticate with Vault using AppRole
+# secrets, render templates, and manage certificates securely.
+# ============================================================================
 
 [Unit]
 Description=Vault Agent container
@@ -12,18 +16,31 @@ After=network-online.target
 Image=docker.io/hashicorp/vault:1.15
 ContainerName=vault-agent
 
+# ============================================================================
 # Network configuration
+# ============================================================================
 Network=host
 
+# ============================================================================
 # Capabilities
+# ============================================================================
+# Prevent memory from being swapped
 AddCapability=IPC_LOCK
+
+# Allow file capabilities to be set
 AddCapability=CAP_SETFCAP
+
+# Required for managing file ownership
 AddCapability=CHOWN
 
+# ============================================================================
 # Startup arguments
+# ============================================================================
 Exec=agent -config=/vault/conf/agent.hcl
 
+# ============================================================================
 # Volumes
+# ============================================================================
 Volume=/etc/vault-agent/conf:/vault/conf:ro
 Volume=/etc/vault-agent/templates:/vault/templates:ro
 Volume=/var/lib/vault-agent/certs:/var/lib/vault-agent/certs:z
@@ -31,15 +48,21 @@ Volume=/etc/pki/ca-trust/extracted/pem:/etc/pki/ca-trust/extracted/pem:ro
 Volume=/etc/ssl/certs:/etc/ssl/certs:ro
 # Volume=/etc/localtime:/etc/localtime:ro
 
+# ============================================================================
 # Podman secrets mounted in /run/secrets
+# ============================================================================
 Secret=vault-role-id,type=mount,target=/run/secrets/vault_role_id
 Secret=vault-secret-id,type=mount,target=/run/secrets/vault_secret_id
 
+# ============================================================================
 # Security configuration
+# ============================================================================
 PodmanArgs=--user=0:0 --entrypoint=vault
 NoNewPrivileges=false
 
+# ============================================================================
 # Resource management
+# ============================================================================
 Memory=1G
 
 [Service]
