@@ -1,0 +1,27 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: keepalived
+################################################################################
+# Description :
+#   Default variables for the keepalived role.
+#   Provide baseline configuration values used by tasks if no override is set.
+#
+# Usage :
+#   - Reference: {{ keepalived_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+#
+# REQUIRED VARIABLES (must be defined by user):
+#   - keepalived_name: Instance name for keepalived
+#   - keepalived_vip:
+#       ip: Virtual IP address
+#       netmask: Network mask for VIP
+#   - keepalived_vrid: Virtual Router ID (1-255)
+#   - keepalived_check_port: TCP port for health checks
+################################################################################
+
+---
+
+# TCP port to check for health monitoring
+keepalived_check_port: 443

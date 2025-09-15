@@ -1,0 +1,43 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+argument_specs:
+  main:
+    short_description: "Configure keepalived for high availability interface"
+    description: |
+      This role configures keepalived to provide high availability interface
+      for the API by managing a shared virtual IP.
+    author: "Astocanthus <contact@low-layer.com>"
+    
+    options:
+      keepalived_name:
+        type: "str"
+        required: true
+        description: "Name of the keepalived instance (unique identifier)"
+        
+      keepalived_vip:
+        type: "dict"
+        required: true
+        description: "Virtual IP configuration"
+        options:
+          ip:
+            type: "str"
+            required: true
+            description: "Virtual IP address"
+          netmask:
+            type: "str" 
+            required: true
+            description: "Network mask (CIDR or decimal format)"
+            
+      keepalived_vrid:
+        type: "int"
+        required: true
+        description: "Virtual Router ID (1-255, identical across all nodes)"
+        
+      keepalived_check_port:
+        type: "int"
+        default: 443
+        description: "TCP port for health check"
+        

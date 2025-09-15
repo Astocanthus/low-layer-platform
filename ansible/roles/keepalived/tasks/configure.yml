@@ -1,0 +1,15 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Deploy Quadlet Podman systemd unit for keepalived
+# ============================================================================
+- name: Deploy Quadlet Podman systemd-unit for keepalived
+  # Deploys the systemd unit file for keepalived managed by Podman/Quadlet
+  ansible.builtin.template:
+    src: "containers/keepalived.container"
+    dest: "{{ quadlet_root_container_path }}/kube-keepalived.container"
+  notify:
+    - Restart keepalived

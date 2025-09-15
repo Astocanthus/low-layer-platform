@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: keepalived
+################################################################################
+# Description : 
+#   Internal variables used by the keepalived role to store configuration 
+#   or state during playbook execution.
+#
+# Usage :
+#   - Reference: {{ role_keepalived_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---

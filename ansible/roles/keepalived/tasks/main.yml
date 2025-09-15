@@ -1,0 +1,13 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+- name: Validate Keepalived variables constraints
+  # Apply Keepalived tasks
+  ansible.builtin.include_tasks: validate.yml
+
+- name: Configure Keepalived
+  # Apply Keepalived tasks
+  # Includes runtime and configurations
+  ansible.builtin.include_tasks: configure.yml

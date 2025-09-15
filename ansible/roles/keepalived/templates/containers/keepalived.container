@@ -1,0 +1,61 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd Quadlet unit for running Keepalived in a container.
+# Provides a virtual IP (VIP) for API server high availability.
+# ============================================================================
+
+[Unit]
+Description=Keepalived
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/shawly/keepalived:2.3.1
+ContainerName={{ keepalived_name }}
+
+# ============================================================================
+# Network
+# ============================================================================
+Network=host
+
+# ============================================================================
+# Capabilities
+# ============================================================================
+# Required to configure network interfaces
+AddCapability=NET_ADMIN
+
+# Required for VRRP multicast traffic
+AddCapability=NET_BROADCAST
+
+# Required for sending raw VRRP packets
+AddCapability=NET_RAW
+
+# ============================================================================
+# Environment
+# ============================================================================
+# Virtual IP assigned for Kubernetes API server
+Environment="KEEPALIVED_VIRTUAL_IP={{ keepalived_vip['ip'] }}"
+
+# Health check port (HTTPS)
+Environment="KEEPALIVED_CHECK_PORT={{ keepalived_check_port }}"
+
+# Subnet mask for the virtual IP
+Environment="KEEPALIVED_VIRTUAL_MASK={{ keepalived_vip['netmask'] }}"
+
+# VRRP group ID (must match across nodes)
+Environment="KEEPALIVED_VRID={{ keepalived_vrid }}"
+
+# Network interface to bind the VIP
+Environment="KEEPALIVED_INTERFACE={{ keepalived_interface }}"
+
+# Disable custom keepalived.conf injection
+Environment="KEEPALIVED_CUSTOM_CONFIG=false"
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,67 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate required variables for keepalived role"
+  assert:
+    that:
+      - keepalived_name != ""
+      - keepalived_name | length > 0
+      - keepalived_vip.ip != ""
+      - keepalived_vip.netmask != ""
+      - keepalived_vrid | int > 0
+      - keepalived_vrid | int <= 255
+      - keepalived_check_port | int > 0
+      - keepalived_check_port | int <= 65535
+    fail_msg: |
+      ❌ Invalid required variables for keepalived role!
+      
+      Required variables:
+      ✅ keepalived_name: Instance name
+      ✅ keepalived_vip.ip: Virtual IP address
+      ✅ keepalived_vip.netmask: Network mask
+      ✅ keepalived_vrid: Virtual Router ID between 1-255
+      ✅ keepalived_check_port: Health check port
+      
+      Configuration example:
+      keepalived_name: "my-app-keepalived"
+      keepalived_vip:
+        ip: "192.168.1.100"
+        netmask: "24"
+      keepalived_vrid: 51
+      keepalived_check_port: 443
+      
+    success_msg: "✅ All required variables are properly defined"
+
+- name: "Validate virtual IP address"
+  assert:
+    that:
+      - keepalived_vip.ip | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid IP address: '{{ keepalived_vip.ip }}'"
+    success_msg: "✅ Valid virtual IP address: {{ keepalived_vip.ip }}"
+
+- name: "Validate network mask"
+  assert:
+    that:
+      - (keepalived_vip.netmask | int >= 1 and keepalived_vip.netmask | int <= 32) or
+        (keepalived_vip.netmask | ansible.utils.ipaddr('netmask'))
+    fail_msg: "❌ Invalid network mask: {{ keepalived_vip.netmask }}"
+    success_msg: "✅ Valid network mask: {{ keepalived_vip.netmask }}"
+
+- name: "Gather network facts"
+  setup:
+    gather_subset: network
+  
+- name: "Verify network interface exists"
+  assert:
+    that:
+      - keepalived_interface in ansible_interfaces
+    fail_msg: |
+      ❌ Network interface '{{ keepalived_interface }}' not found!
+      Available interfaces: {{ ansible_interfaces | join(', ') }}
+    success_msg: "✅ Network interface found: {{ keepalived_interface }}"
