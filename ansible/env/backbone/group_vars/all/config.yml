@@ -1,0 +1,14 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables Global configurations
+################################################################################
+
+# Path where system-wide Quadlet container unit files are stored
+quadlet_root_container_path: /etc/containers/systemd
+
+# Path where user-level (rootless) Quadlet container unit files are stored
+quadlet_rootless_container_path: ~/.config/containers/systemd
