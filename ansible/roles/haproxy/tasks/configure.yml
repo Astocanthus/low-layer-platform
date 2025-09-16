@@ -29,7 +29,7 @@
 # ============================================================================
 # Deploy HAProxy Podman systemd unit
 # ============================================================================
-- name: Deploy Podman systemd unit for haproxy
+- name: Deploy Quadlet Podman systemd-unit for haproxy
   # Deploy systemd unit for HAProxy container using Quadlet
   ansible.builtin.template:
     src: "containers/haproxy.container"

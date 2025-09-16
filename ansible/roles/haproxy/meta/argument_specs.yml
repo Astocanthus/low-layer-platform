@@ -1,1 +1,23 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
 ---
+
+argument_specs:
+  main:
+    short_description: "Configure HAProxy for high availability load balancer"
+    description: |
+      This role configures HAProxy to provide a high availability load balancer
+      for APIs or services, ensuring traffic distribution, failover, and
+      redundancy. It supports multiple backend servers, health checks, and
+      optional SSL/TLS termination.
+
+      Usage:
+        - Define backend pools for API or service endpoints.
+        - Customize health check intervals and timeouts.
+        - Configure stickiness if needed.
+
+      Notes:
+        - Requires keepalived or similar for VIP management.
+    author: "Astocanthus <contact@low-layer.com>"
+    
