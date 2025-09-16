@@ -9,7 +9,7 @@
 #   Provide baseline security configuration values for tasks.
 #
 # Usage :
-#   - Reference: {{ hardening_default_var_name }}
+#   - Reference: {{ hardening_var_name }}
 #   - Can be overridden by role parameters, playbook vars, or extra-vars.
 ################################################################################
 

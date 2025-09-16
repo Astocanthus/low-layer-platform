@@ -9,7 +9,7 @@
 #   or state during playbook execution.
 #
 # Usage :
-#   - Reference: {{ z_template_var_name }}
+#   - Reference: {{ role_z_template_var_name }}
 #   - Variables defined here have the highest priority during execution.
 ################################################################################
 

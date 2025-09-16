@@ -9,7 +9,7 @@
 #   during playbook execution.
 #
 # Usage :
-#   - Reference: {{ haproxy_var_name }}
+#   - Reference: {{ role_haproxy_var_name }}
 #   - Variables defined here have the highest priority during execution.
 ################################################################################
 

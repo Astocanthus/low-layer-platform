@@ -9,7 +9,7 @@
 #   Provide baseline configuration values used by tasks when no override is set.
 #
 # Usage :
-#   - Reference: {{ haproxy_default_var_name }}
+#   - Reference: {{ haproxy_var_name }}
 #   - Can be overridden by role parameters, playbook vars, or extra-vars.
 #
 # REQUIRED VARIABLES (must be defined by user):

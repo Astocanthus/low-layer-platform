@@ -9,7 +9,7 @@
 #   Provide baseline configuration values used by tasks if no override is set.
 #
 # Usage :
-#   - Reference: {{ vault_agent_default_var_name }}
+#   - Reference: {{ vault_agent_var_name }}
 #   - Can be overridden by role parameters, playbook vars, or extra-vars.
 ################################################################################
 

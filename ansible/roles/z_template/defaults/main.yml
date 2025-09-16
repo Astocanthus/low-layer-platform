@@ -9,7 +9,7 @@
 #   Provide baseline configuration values used by tasks if no override is set.
 #
 # Usage :
-#   - Reference: {{ z_template_default_var_name }}
+#   - Reference: {{ z_template_var_name }}
 #   - Can be overridden by role parameters, playbook vars, or extra-vars.
 ################################################################################
 
