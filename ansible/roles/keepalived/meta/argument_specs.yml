@@ -7,8 +7,17 @@ argument_specs:
   main:
     short_description: "Configure keepalived for high availability interface"
     description: |
-      This role configures keepalived to provide high availability interface
-      for the API by managing a shared virtual IP.
+      This role configures keepalived to provide a high availability interface
+      for APIs or services by managing a shared Virtual IP (VIP). It ensures
+      failover between nodes and allows continuous service availability.
+
+      Usage:
+        - Assign a Virtual IP (VIP) to be shared between HA nodes.
+
+      Notes:
+        - Ensure the 'netaddr' Python library is installed on the Ansible
+          controller for IP validation filters if using dynamic IP checks.
+        - Keepalived requires root privileges to manage VIPs.
     author: "Astocanthus <contact@low-layer.com>"
     
     options:
