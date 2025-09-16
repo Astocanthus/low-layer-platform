@@ -11,6 +11,14 @@
 # Usage :
 #   - Reference: {{ haproxy_default_var_name }}
 #   - Can be overridden by role parameters, playbook vars, or extra-vars.
+#
+# REQUIRED VARIABLES (must be defined by user):
+#   - haproxy_folder_path: virtual servers and backends folder
 ################################################################################
 
 ---
+
+# Folder for HAProxy configuration fragments
+# All files defining virtual servers and backends placed here will be
+# automatically included/merged into the main HAProxy configuration.
+haproxy_folder_path: "/etc/haproxy/conf.d/"
