@@ -4,7 +4,7 @@
 ---
 
 # ============================================================================
-# Ensure HAProxy configuration directories
+# Ensure HAProxy configuration
 # ============================================================================
 - name: Ensure sites config dirs are present
   # Create required HAProxy configuration directories
@@ -12,7 +12,15 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ haproxy_folder_path }}"
+    - "{{ haproxy_config_path }}"
+
+- name: Deploy basic config reverse proxy config file
+  # Install HAProxy basic configuration (log, timeout etc)
+  ansible.builtin.template:
+    src: "conf/default.cfg"
+    dest: "{{ haproxy_config_path }}/default.cfg"
+  notify:
+    - Restart haproxy
 
 # ============================================================================
 # Configure non-local IP binding

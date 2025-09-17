@@ -3,6 +3,10 @@
 
 ---
 
+- name: Validate haproxy variables constraints
+  # Apply validate tasks
+  ansible.builtin.include_tasks: validate.yml
+
 - name: Configure HAProxy
   # Apply HAProxy tasks
   # Includes runtime and configurations

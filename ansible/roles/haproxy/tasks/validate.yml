@@ -1,0 +1,15 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate configuration paths are absolute"
+  assert:
+    that:
+      - haproxy_config_path is match('^/')
+    fail_msg: "❌ All paths must be absolute (start with /)"
+    success_msg: "✅ All configuration paths are absolute"

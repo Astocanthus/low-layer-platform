@@ -22,7 +22,7 @@ argument_specs:
     author: "Astocanthus <contact@low-layer.com>"
     
     options:
-      haproxy_folder_path:
+      haproxy_config_path:
         type: "str"
         default: "/etc/haproxy/conf.d/"
         description: "Folder containing virtual servers and backend definitions. Only files ending with '.cfg' will be integrated."
