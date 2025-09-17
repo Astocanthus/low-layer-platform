@@ -41,11 +41,11 @@ Exec=agent -config=/vault/conf/agent.hcl
 # ============================================================================
 # Volumes
 # ============================================================================
-Volume=/etc/vault-agent/conf:/vault/conf:ro
-Volume=/etc/vault-agent/templates:/vault/templates:ro
-Volume=/var/lib/vault-agent/certs:/var/lib/vault-agent/certs:z
-Volume=/etc/pki/ca-trust/extracted/pem:/etc/pki/ca-trust/extracted/pem:ro
-Volume=/etc/ssl/certs:/etc/ssl/certs:ro
+Volume={{ system_ssl_certs_path }}:{{ system_ssl_certs_path }}:ro
+Volume={{ system_pki_ca_trust_path }}:{{ system_pki_ca_trust_path }}:ro
+Volume={{ vault_agent_config_path }}:/vault/conf:ro
+Volume={{ vault_agent_templates_path }}:/vault/templates:ro
+Volume={{ vault_agent_certs_path }}:/certs:z
 # Volume=/etc/localtime:/etc/localtime:ro
 
 # ============================================================================

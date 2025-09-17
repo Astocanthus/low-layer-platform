@@ -9,25 +9,25 @@
 - name: Create configuration directory
   # Ensure config and template directories exist with correct ownership and permissions
   ansible.builtin.file:
-    path: "/etc/vault-agent/{{ item }}"
+    path: "{{ item }}"
     state: directory
     owner: "{{ vault_agent_uid }}"
     group: "{{ vault_agent_gid }}"
     mode: '0750'
   with_items:
-    - conf
-    - templates
+    - "{{ vault_agent_config_path }}"
+    - "{{ vault_agent_templates_path }}"
 
 - name: Create certs directory
   # Ensure directory for Kubernetes certificates exists
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ vault_agent_certs_path }}/{{ item }}"
     state: directory
     owner: root
     group: root
     mode: '0750'
   with_items:
-    - "/var/lib/vault-agent/certs/kubernetes"
+    - "{{ vault_agent_templats_applications_list }}"
 
 # ============================================================================
 # Deploy Vault Agent configuration
@@ -36,7 +36,7 @@
   # Template the Vault Agent configuration file
   ansible.builtin.template:
     src: conf/agent.hcl
-    dest: "/etc/vault-agent/conf/agent.hcl"
+    dest: "{{ vault_agent_config_path }}/agent.hcl"
     owner: "{{ vault_agent_uid | int }}"
     group: "{{ vault_agent_gid | int }}"
     mode: '0750'
@@ -47,36 +47,36 @@
 # Deploy Vault Agent templates
 # ============================================================================
 - name: Deploy Vault Agent templates
-  # Template all Vault resources defined in kube_vault_templates
+  # Template all Vault resources defined in vault_kubernetes_templates
   ansible.builtin.template:
     src: "templates/{{ item }}.tpl"
-    dest: "/etc/vault-agent/templates/{{ item }}.tpl"
+    dest: "{{ vault_agent_templates_path }}/{{ item }}.tpl"
     owner: "{{ vault_agent_uid | int }}"
     group: "{{ vault_agent_gid | int }}"
     mode: '0750'
-  with_items: "{{ kube_vault_templates }}"
+  with_items: "{{ vault_kubernetes_templates }}"
   notify:
     - Restart Vault Agent
 
 - name: Deploy Vault Agent templates kube SA
-  # Template Kubernetes service account secrets if kube_sa is enabled
+  # Template Kubernetes service account secrets if vault_transit_kubernetes_sa is enabled
   ansible.builtin.template:
     src: "templates/{{ item }}.tpl"
-    dest: "/etc/vault-agent/templates/{{ item }}.tpl"
+    dest: "{{ vault_agent_templates_path }}/{{ item }}.tpl"
     owner: "{{ vault_agent_uid | int }}"
     group: "{{ vault_agent_gid | int }}"
     mode: '0750'
   with_items: 
     - kube-sa-key
     - kube-sa-pem
-  when: (kube_sa is defined) and (kube_sa is true)
+  when: (vault_transit_kubernetes_sa is defined) and (vault_transit_kubernetes_sa is true)
   notify:
     - Restart Vault Agent
 
 # ============================================================================
 # Deploy Podman systemd unit for Vault Agent
 # ============================================================================
-- name: Deploy Podman systemd unit for Vault Agent
+- name: Deploy Quadlet Podman systemd-unit for Vault Agent
   # Template systemd unit file to start Vault Agent container
   ansible.builtin.template:
     src: "containers/vault-agent.container"

@@ -29,25 +29,25 @@ auto_auth {
 # Enable mlock to prevent swapping on the host (avoid token leakage to disk)
 disable_mlock = true
 
-{% for tpl in kube_vault_templates %}
+{% for tpl in vault_kubernetes_templates %}
 template {
   source      = "/vault/templates/{{ tpl }}.tpl"
-  destination = "/var/lib/vault-agent/certs/kubernetes/{{ tpl }}.bundle.pem"
+  destination = "/certs/kubernetes/{{ tpl }}.bundle.pem"
   perms       = "0600" 
   error_on_missing_key = true
 }
 {% endfor %}
 
-{% if kube_sa %}
+{% if vault_transit_kubernetes_sa %}
 template {
   source      = "/vault/templates/kube-sa-key.tpl"
-  destination = "/var/lib/vault-agent/certs/kubernetes/sa.key"
+  destination = "/certs/kubernetes/sa.key"
   perms       = "0600" 
   error_on_missing_key = true
 }
 template {
   source      = "/vault/templates/kube-sa-pem.tpl"
-  destination = "/var/lib/vault-agent/certs/kubernetes/sa.pem"
+  destination = "/certs/kubernetes/sa.pem"
   perms       = "0640" 
   error_on_missing_key = true
 }

@@ -3,6 +3,10 @@
 
 ---
 
+- name: Validate vault-agent variables constraints
+  # Apply validate tasks
+  ansible.builtin.include_tasks: validate.yml
+
 - name: Install Certificate Authorities for Vault Agent
   # Include tasks to deploy internal and Kubernetes CA certificates on the host
   ansible.builtin.include_tasks: install_ca.yml

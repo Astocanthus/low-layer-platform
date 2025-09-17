@@ -9,14 +9,14 @@
 - name: "Deploy internal-CA certificate"
   # Copy internal CA certificate to system trust store
   ansible.builtin.copy:
-    src: internal-ca.crt
-    dest: /etc/pki/ca-trust/source/anchors/internal-ca.crt
+    src:  "internal-ca.crt"
+    dest: "{{ system_pki_ca_trust_anchor_path }}/internal-ca.crt"
 
 - name: "Deploy kube-CA certificate"
   # Copy Kubernetes CA certificate to system trust store
   ansible.builtin.copy:
-    src: kube-ca.crt
-    dest: /etc/pki/ca-trust/source/anchors/kube-ca.crt
+    src:  "kube-ca.crt"
+    dest: "{{ system_pki_ca_trust_anchor_path }}/kube-ca.crt"
 
 # ============================================================================
 # Extract certificates

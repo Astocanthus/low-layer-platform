@@ -1,0 +1,50 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate configuration paths are absolute"
+  assert:
+    that:
+      - vault_agent_config_path is match('^/')
+      - vault_agent_templates_path is match('^/')
+      - vault_agent_certs_path is match('^/')
+      - quadlet_root_container_path is match('^/')
+      - system_pki_ca_trust_path is match('^/')
+      - system_pki_ca_trust_anchor_path is match('^/')
+    fail_msg: "❌ All paths must be absolute (start with /)"
+    success_msg: "✅ All configuration paths are absolute"
+
+- name: "Validate Vault Agent UID"
+  assert:
+    that:
+      - vault_agent_uid | int > 0
+      - vault_agent_uid | int < 65536
+    fail_msg: "❌ Invalid UID: {{ vault_agent_uid }} (must be between 1-65535)"
+    success_msg: "✅ Valid Vault Agent UID: {{ vault_agent_uid }}"
+
+- name: "Validate Vault Agent GID"
+  assert:
+    that:
+      - vault_agent_gid | int > 0
+      - vault_agent_gid | int < 65536
+    fail_msg: "❌ Invalid GID: {{ vault_agent_gid }} (must be between 1-65535)"
+    success_msg: "✅ Valid Vault Agent GID: {{ vault_agent_gid }}"
+
+- name: "Validate templates applications list is not empty"
+  assert:
+    that:
+      - vault_agent_templats_applications_list | length > 0
+    fail_msg: "❌ vault_agent_templats_applications_list cannot be empty"
+    success_msg: "✅ Applications list contains {{ vault_agent_templats_applications_list | length }} item(s)"
+
+- name: "Validate Kubernetes templates list is not empty"
+  assert:
+    that:
+      - vault_kubernetes_templates | length > 0
+    fail_msg: "❌ vault_kubernetes_templates cannot be empty"
+    success_msg: "✅ Kubernetes templates list contains {{ vault_kubernetes_templates | length }} template(s)"
