@@ -4,15 +4,15 @@
 ---
 
 ################################################################################
-# Group Variables for Kubernetes API, HAProxy, and Vault
+# Group Variables for Kubernetes cluster API
 ################################################################################
 
 # Virtual IP and FQDN for the internal Kubernetes API server
-vip_kube_api_server:
+vip_kubernetes_api_server:
   internal:
     ip: 192.168.3.251
+    netmask: 24
     fqdn: "kube.low-layer.internal"
 
 # Kubernetes API server configuration
-kube_api_server:
-  port: 6443
+kubernetes_api_server_port: 6443

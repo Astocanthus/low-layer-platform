@@ -1,0 +1,27 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes cluster configurations
+################################################################################
+
+# Kubernetes configuration directories and ownership
+kubernetes_config: 
+  path:  "/etc/kubernetes" # Base directory for Kubernetes configs
+  owner: "root"            # Owner of the directory
+  group: "root"            # Group of the directory
+  mode:  "0750"            # Permissions
+
+# Kubelet configuration folder
+kubelet_config: 
+  path:  "/etc/kubelet" # Base directory for Kubelet configs
+  owner: "root"         # Owner of the directory
+  group: "root"         # Group of the directory
+  mode:  "0750"         # Permissions
+
+# Kubernetes service cluster ip range cidr definition (not the IPAM)
+kubernetes_service_cluster_ip_range_cidr:
+  network: 10.96.0.0
+  netmask: 12

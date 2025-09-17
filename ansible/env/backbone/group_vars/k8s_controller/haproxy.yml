@@ -8,10 +8,13 @@
 ################################################################################
 
 # Health check settings for the API load balancer
-haproxy_config:
-  health_check_interval: "5s"   # Interval between health checks
-  health_check_rise: 2          # Number of successful checks before marking UP
-  health_check_fall: 3          # Number of failed checks before marking DOWN
+haproxy_health_check_config:
+  interval: 5   # Interval between health checks (in secondes)
+  rise: 2       # Number of successful checks before marking UP
+  fall: 3       # Number of failed checks before marking DOWN
 
 # Ansible host group to integrate into the HAProxy backend template
-haproxy_target_group: "k8s-controller"
+haproxy_target_group: "k8s_controller"
+
+# Folder for HAProxy configuration fragments
+haproxy_config_path: "/etc/haproxy/conf.d/"

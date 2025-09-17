@@ -1,0 +1,19 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes controller nodes
+################################################################################
+
+# Assigns master and control-plane labels to the node
+kubernetes_node_labels:
+  node-role.kubernetes.io/master: ""
+  openstack-control-plane: "enabled"
+
+# Taints applied to control-plane nodes to prevent scheduling of regular pods
+kubernetes_node_taints:
+  - key: "node-role.kubernetes.io/control-plane"
+    value: ""
+    effect: "NoSchedule"

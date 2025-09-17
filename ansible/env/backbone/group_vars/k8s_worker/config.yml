@@ -1,0 +1,15 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes worker nodes
+################################################################################
+
+# Assigns worker role label to the node
+kubernetes_node_labels:
+  node-role.kubernetes.io/worker: ""
+
+# No taints configured; nodes are schedulable by default
+kubernetes_node_taints: []

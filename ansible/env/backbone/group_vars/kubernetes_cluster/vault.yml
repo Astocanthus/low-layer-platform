@@ -1,0 +1,20 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Group Variables for Kubernetes cluster vault configurations
+################################################################################
+
+# ==============================================================================
+# Vault OIDC authentication configuration for Kubernetes
+# ==============================================================================
+# Username used for OIDC login in Vault
+vault_oidc_username:  "kube-admin-oidc"
+
+# Password associated with the OIDC user (temporary workarround)
+vault_oidc_password:  "password1"
+
+# Name of the OIDC token stored in Vault for Kubernetes
+vault_oidc_client_id: "kubernetes-low-layer-oidc-token"   

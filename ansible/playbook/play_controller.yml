@@ -12,7 +12,7 @@
   # Ensure that each component is installed and configured in the correct order
   become: yes
   gather_facts: yes
-  hosts: k8s-controller
+  hosts: k8s_controller
   roles:
     - keepalived                  # Provides HA via virtual IP
     - vault_agent                 # Manages certificates and encryption keys

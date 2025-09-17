@@ -7,20 +7,29 @@
 # Group Variables for Vault agent
 ################################################################################
 
+# ==============================================================================
+# Vault serveur
+# ==============================================================================
+# Vault server address used by the agent
+vault_addr: "https://vault.internal"
+
+# ==============================================================================
+# Vault Agent
+# ==============================================================================
+# Path to Vault Agent configuration files
+vault_agent_config_path: "/etc/vault-agent/conf"
+
+# Path to Vault Agent configuration files
+vault_agent_templates_path: "/etc/vault-agent/templates"
+
+# Path to store Vault Agent certificates
+vault_agent_certs_path: "/var/lib/vault-agent/certs/"
+
+vault_agent_templats_applications_list:
+  - "kubernetes"
+
 # UID for the Vault agent user
 vault_agent_uid: 100
 
 # GID for the Vault agent user
 vault_agent_gid: 100
-
-# Vault server address
-vault_addr: "https://vault.internal"
-
-# Vault user for Kubernetes authentication
-vault_user: "kube-admin-oidc"
-
-# Password for the Vault user
-vault_pass: "password1"
-
-# Path to Kubernetes OIDC token in Vault
-vault_token_path: "identity/oidc/token/kubernetes-low-layer-oidc-token"

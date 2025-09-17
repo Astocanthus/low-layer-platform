@@ -4,22 +4,11 @@
 ---
 
 ################################################################################
-# Group Variables for Kubernetes controller nodes
+# Group Variables for Vault Kubernetes certificates controller nodes
 ################################################################################
 
-# Assigns master and control-plane labels to the node
-kube_node_labels:
-  node-role.kubernetes.io/master: ""
-  openstack-control-plane: "enabled"
-
-# Taints applied to control-plane nodes to prevent scheduling of regular pods
-kube_node_taints:
-  - key: "node-role.kubernetes.io/control-plane"
-    value: ""
-    effect: "NoSchedule"
-
 # Vault templates to apply for controller node certificates and keys
-kube_vault_templates:
+vault_kubernetes_templates:
   - kube-api-internal
   - kube-apiserver
   - kube-front-proxy-client
@@ -29,4 +18,4 @@ kube_vault_templates:
   - kubelet
 
 # Enable creation of Kubernetes encryption key pair service accounts
-kube_sa: true
+vault_transit_kubernetes_sa: true

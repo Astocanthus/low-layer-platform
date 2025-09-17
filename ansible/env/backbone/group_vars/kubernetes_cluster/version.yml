@@ -1,0 +1,20 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Kubernetes cluster versions configuration
+################################################################################
+
+# Kubernetes cluster version (baseline for all components)
+kubernetes_cluster_version: "1.32.5"
+
+# Component-specific versions
+kubernetes_version_api_server:         "v{{ kubernetes_cluster_version }}-rancher1"
+kubernetes_version_controller_manager: "v{{ kubernetes_cluster_version }}-rancher1"
+kubernetes_version_scheduler:          "v{{ kubernetes_cluster_version }}-rancher1"
+kubernetes_version_kubelet:            "v{{ kubernetes_cluster_version }}-rancher1"
+kubernetes_version_cni:                "1.7.1"
+kubernetes_version_crio:               "1.32.0"
+kubernetes_version_cri_tools :         "1.29.0"

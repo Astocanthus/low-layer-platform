@@ -4,19 +4,12 @@
 ---
 
 ################################################################################
-# Group Variables for Kubernetes nodes
+# Group Variables for Vault Kubernetes certificates worker nodes
 ################################################################################
 
-# Assigns worker role label to the node
-kube_node_labels:
-  node-role.kubernetes.io/worker: ""
-
-# No taints configured; nodes are schedulable by default
-kube_node_taints: []
-
 # Vault templates to apply for this group
-kube_vault_templates:
+vault_kubernetes_templates:
   - kubelet
 
 # Disable creation of Kubernetes encryption key pair service accounts
-kube_sa: false
+vault_transit_kubernetes_sa: false

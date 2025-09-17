@@ -1,0 +1,25 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Keepalived configuration for Kubernetes API load balancer
+################################################################################
+
+# Name of the keepalived instance for Kubernetes API HA
+keepalived_name: "kube-keepalived"
+
+# Virtual IP and FQDN for the internal Kubernetes API server
+keepalived_vip: 
+  ip: "{{ vip_kubernetes_api_server['internal']['ip'] }}"
+  netmask: "{{ vip_kubernetes_api_server['internal']['netmask'] }}"
+
+# Network interface to bind the virtual IP
+keepalived_interface: "eno1"
+
+# VRID (Virtual Router ID) for keepalived instance
+keepalived_vrid: 99
+
+# TCP port to check for health monitoring
+keepalived_check_port: 443
