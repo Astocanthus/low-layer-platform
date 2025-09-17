@@ -1,0 +1,44 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate configuration paths are absolute"
+  assert:
+    that:
+      - kubernetes_config.path is match('^/')
+      - haproxy_config_path is match('^/')
+      - quadlet_root_container_path is match('^/')
+      - system_pki_ca_trust_path is match('^/')
+      - system_pki_ca_trust_anchor_path is match('^/')
+      - system_ssl_certs_path is match('^/')
+      - vault_agent_certs_path is match('^/')
+    fail_msg: "❌ All paths must be absolute (start with /)"
+    success_msg: "✅ All configuration paths are absolute"
+
+- name: "Validate VIP Kubernetes API Server IP"
+  assert:
+    that:
+      - vip_kubernetes_api_server.internal.ip | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid IP address: '{{ vip_kubernetes_api_server.internal.ip }}'"
+    success_msg: "✅ Valid VIP IP: {{ vip_kubernetes_api_server.internal.ip }}"
+
+- name: "Validate Kubernetes API Server port"
+  assert:
+    that:
+      - kubernetes_api_server_port | int > 0
+      - kubernetes_api_server_port | int <= 65535
+    fail_msg: "❌ Invalid port: {{ kubernetes_api_server_port }}"
+    success_msg: "✅ Valid Kubernetes API Server port: {{ kubernetes_api_server_port }}"
+
+- name: "Validate Service Cluster IP range"
+  assert:
+    that:
+      - kubernetes_service_cluster_ip_range_cidr.network | ansible.utils.ipaddr
+      - (kubernetes_service_cluster_ip_range_cidr.netmask | int >= 1 and kubernetes_service_cluster_ip_range_cidr.netmask | int <= 32)
+    fail_msg: "❌ Invalid service cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr }}"
+    success_msg: "✅ Valid service cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }}"

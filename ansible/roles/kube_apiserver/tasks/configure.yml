@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Create Kubernetes configuration
+# ============================================================================
+- name: Create kubernetes configuration directory
+  # Ensure /etc/kubernetes directory exists with secure permissions
+  ansible.builtin.file:
+    path:  "{{ kubernetes_config['path'] }}"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "{{ kubernetes_config['mode'] }}"
+    state: directory
+
+# ============================================================================
+# Deploy HAProxy reverse proxy config for kube-api-internal
+# ============================================================================
+- name: Deploy haproxy kube-api-internal reverse proxy config file
+  # Install HAProxy configuration for internal Kubernetes API access
+  ansible.builtin.template:
+    src: "conf/kube-api-internal.cfg"
+    dest: "{{ haproxy_config_path }}/kube-api-internal.cfg"
+  notify:
+    - Restart haproxy
+
+# ============================================================================
+# Deploy Podman systemd unit for kube-apiserver
+# ============================================================================
+- name: Deploy Podman systemd unit for kube-apiserver
+  # Deploy kube-apiserver systemd unit via Podman container definition
+  ansible.builtin.template:
+    src: "containers/kube-apiserver.container"
+    dest: "{{ quadlet_root_container_path }}/kube-apiserver.container"
+  notify:
+    - Restart kube-apiserver

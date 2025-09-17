@@ -1,1 +1,171 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
 ---
+
+argument_specs:
+  main:
+    short_description: "Deploy and configure Kubernetes API Server with HAProxy reverse proxy"
+    description: |
+      This role configures and deploys the Kubernetes API Server in a
+      containerized environment using Podman and integrates it with HAProxy
+      for high availability and load balancing.
+
+      It manages configuration directories, HAProxy reverse proxy settings,
+      and Podman Quadlet systemd units for the kube-apiserver.
+
+      Usage:
+        - Ensure Vault Agent is issuing required certificates before running.
+        - Ensure HAProxy is configured to expose the internal VIP.
+
+      Notes:
+        - Requires root privileges for systemd and container operations.
+        - The 'dig' lookup plugin is used for resolving backend server IPs.
+    author: "Astocanthus <contact@low-layer.com>"
+
+    options:
+      kubernetes_config:
+        type: "dict"
+        required: true
+        description: "Configuration for Kubernetes directory"
+        options:
+          path:
+            type: "str"
+            required: true
+            description: "Path to the Kubernetes configuration directory"
+          owner:
+            type: "str"
+            required: true
+            description: "Owner of the configuration directory"
+          group:
+            type: "str"
+            required: true
+            description: "Group of the configuration directory"
+          mode:
+            type: "str"
+            required: true
+            description: "Filesystem permissions for the directory"
+
+      haproxy_config_path:
+        type: "str"
+        required: true
+        description: "Path where HAProxy configuration files are stored"
+
+      haproxy_health_check_config:
+        type: "dict"
+        required: true
+        description: "HAProxy health check configuration"
+        options:
+          interval:
+            type: "int"
+            required: true
+            description: "Health check interval in ms"
+          rise:
+            type: "int"
+            required: true
+            description: "Number of successful checks before marking server up"
+          fall:
+            type: "int"
+            required: true
+            description: "Number of failed checks before marking server down"
+
+      haproxy_target_group:
+        type: "str"
+        required: true
+        description: "Ansible inventory group containing kube-apiserver hosts"
+
+      quadlet_root_container_path:
+        type: "str"
+        required: true
+        description: "Root path for Podman Quadlet container unit files"
+
+      vip_kubernetes_api_server:
+        type: "dict"
+        required: true
+        description: "VIP configuration for Kubernetes API Server"
+        options:
+          internal:
+            type: "dict"
+            required: true
+            description: "Internal VIP configuration"
+            options:
+              ip:
+                type: "str"
+                required: true
+                description: "Internal VIP IP address"
+              fqdn:
+                type: "str"
+                required: true
+                description: "Internal VIP FQDN"
+              netmask:
+                type: "str"
+                required: true
+                description: "Internal VIP netmask"
+
+      kubernetes_api_server_port:
+        type: "int"
+        required: true
+        description: "Port exposed by the kube-apiserver"
+
+      kubernetes_component_version:
+        type: "dict"
+        description: "Version mapping for Kubernetes components"
+        options:
+          api_server:
+            type: "str"
+            required: true
+            description: "Version string for kube-apiserver image"
+
+      vault_addr:
+        type: "str"
+        required: true
+        description: "Vault server address for OIDC issuer"
+
+      vault_oidc_username:
+        type: "str"
+        required: true
+        description: "Username used for OIDC login in Vault"
+
+      vault_oidc_password:
+        type: "str"
+        required: true
+        description: "Password associated with the OIDC user (temporary workaround)"
+
+      vault_oidc_client_id:
+        type: "str"
+        required: true
+        description: "Name of the OIDC token stored in Vault for Kubernetes"
+
+      kubernetes_service_cluster_ip_range_cidr:
+        type: "dict"
+        required: true
+        description: "Service Cluster IP range configuration"
+        options:
+          network:
+            type: "str"
+            required: true
+            description: "Service cluster network"
+          netmask:
+            type: "str"
+            required: true
+            description: "Service cluster netmask"
+
+      system_pki_ca_trust_path:
+        type: "str"
+        required: true
+        description: "CA trust store source directory (contains source/anchors/ for custom CAs, extracted/ subdirectory generated by update-ca-trust command)"
+
+      system_pki_ca_trust_anchor_path:
+        type: "str" 
+        required: true
+        description: "Custom CA certificates directory (where to add .crt/.pem files before running update-ca-trust to rebuild the trust store)"
+
+      system_ssl_certs_path:
+        type: "str"
+        required: true
+        description: "Application CA lookup directory (symlinks pointing to extracted/ files, used by curl/wget/openssl for certificate validation)"
+
+      vault_agent_certs_path:
+        type: "str"
+        required: true
+        description: "Path to Vault Agent certificates"

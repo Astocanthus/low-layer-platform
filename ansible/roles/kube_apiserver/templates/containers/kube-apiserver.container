@@ -1,0 +1,96 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd unit file for running kube-apiserver in a containerized environment.
+# This configuration runs the Kubernetes API Server with Vault-issued certs,
+# OIDC integration, and high availability settings.
+# ============================================================================
+
+[Unit]
+Description=kube-apiserver
+Documentation=https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
+After=network.target
+PartOf=kubernetes.target
+
+[Container]
+Image=docker.io/rancher/hyperkube:{{ kubernetes_version_api_server }}
+ContainerName=kube-apiserver
+
+Exec=kube-apiserver \
+    --advertise-address={{ lookup('dig', inventory_hostname) }} \
+
+    --authorization-mode=Node,RBAC \
+    --allow-privileged=true \
+
+    --client-ca-file=/certs/ca.pem \
+
+    --enable-admission-plugins=NodeRestriction \
+    --etcd-servers=http://etcd.internal:2379 \
+
+    --kubelet-client-certificate=/certs/kube-apiserver-kubelet-client.pem \
+    --kubelet-client-key=/certs/kube-apiserver-kubelet-client.key \
+
+    --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \
+
+    --proxy-client-cert-file=/certs/kube-front-proxy-client.pem \
+    --proxy-client-key-file=/certs/kube-front-proxy-client.key \
+
+    --requestheader-allowed-names=front-proxy-client \
+    --requestheader-client-ca-file=/certs/ca-front-proxy.pem \
+    --requestheader-extra-headers-prefix=X-Remote-Extra- \
+    --requestheader-group-headers=X-Remote-Group \
+    --requestheader-username-headers=X-Remote-User \
+    --secure-port=6443 \
+
+    --service-account-issuer={{ vip_kubernetes_api_server["internal"]["fqdn"] }} \
+    --service-account-key-file=/certs/sa.pem \
+    --service-account-signing-key-file=/certs/sa.key \
+
+    --oidc-issuer-url={{ vault_addr }}/v1/identity/oidc \
+    --oidc-client-id={{ vault_oidc_client_id }} \
+    
+    --oidc-username-claim=username \
+    --oidc-groups-claim=groups \
+
+    --service-cluster-ip-range={{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }} \
+
+    --tls-cert-file=/certs/kube-apiserver.pem \
+    --tls-private-key-file=/certs/kube-apiserver.key \
+
+    --v=2
+
+# ============================================================================
+# Network
+# ============================================================================
+Network=host
+# SecurityLabelDisable=true
+
+# ============================================================================
+# Volumes
+# ============================================================================
+Volume={{ system_pki_ca_trust_path }}:{{ system_pki_ca_trust_path }}:ro
+Volume={{ system_ssl_certs_path }}:{{ system_ssl_certs_path }}:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/ca.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/sa.pem:/certs/sa.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/sa.key:/certs/sa.key:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/ca-front-proxy.pem:/certs/ca-front-proxy.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.pem:/certs/kube-apiserver-kubelet-client.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.key:/certs/kube-apiserver-kubelet-client.key:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-front-proxy-client.pem:/certs/kube-front-proxy-client.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-front-proxy-client.key:/certs/kube-front-proxy-client.key:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver.pem:/certs/kube-apiserver.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver.key:/certs/kube-apiserver.key:ro
+
+# ============================================================================
+# Capabilities
+# ============================================================================
+# Allow binding to privileged ports (e.g., 80, 443)
+AddCapability=NET_BIND_SERVICE
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

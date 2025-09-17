@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# VARIABLE ROLE: kube_apiserver
+################################################################################
+# Description : 
+#   Internal variables used by the kube_apiserver role to store configuration 
+#   or state during playbook execution.
+#
+# Usage :
+#   - Reference: {{ role_kube_apiserver_var_name }}
+#   - Variables defined here have the highest priority during execution.
+################################################################################
+
+---
