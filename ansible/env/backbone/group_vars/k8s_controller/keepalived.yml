@@ -12,8 +12,8 @@ keepalived_name: "kube-keepalived"
 
 # Virtual IP and FQDN for the internal Kubernetes API server
 keepalived_vip: 
-  ip: "{{ vip_kubernetes_api_server['internal']['ip'] }}"
-  netmask: "{{ vip_kubernetes_api_server['internal']['netmask'] }}"
+  ip: "{{ vip_kubernetes_apiserver['internal']['ip'] }}"
+  netmask: "{{ vip_kubernetes_apiserver['internal']['netmask'] }}"
 
 # Network interface to bind the virtual IP
 keepalived_interface: "eno1"

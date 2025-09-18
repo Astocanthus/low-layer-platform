@@ -6,12 +6,11 @@
 ################################################################################
 # Kubernetes cluster versions configuration
 ################################################################################
-
 # Kubernetes cluster version (baseline for all components)
 kubernetes_cluster_version: "1.32.5"
 
 # Component-specific versions
-kubernetes_version_api_server:         "v{{ kubernetes_cluster_version }}-rancher1"
+kubernetes_version_apiserver:         "v{{ kubernetes_cluster_version }}-rancher1"
 kubernetes_version_controller_manager: "v{{ kubernetes_cluster_version }}-rancher1"
 kubernetes_version_scheduler:          "v{{ kubernetes_cluster_version }}-rancher1"
 kubernetes_version_kubelet:            "v{{ kubernetes_cluster_version }}-rancher1"

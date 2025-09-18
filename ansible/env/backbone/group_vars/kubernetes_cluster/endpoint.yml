@@ -6,13 +6,31 @@
 ################################################################################
 # Group Variables for Kubernetes cluster API
 ################################################################################
-
 # Virtual IP and FQDN for the internal Kubernetes API server
-vip_kubernetes_api_server:
+vip_kubernetes_apiserver:
   internal:
     ip: 192.168.3.251
     netmask: 24
     fqdn: "kube.low-layer.internal"
 
-# Kubernetes API server configuration
-kubernetes_api_server_port: 6443
+
+
+# ============================================================================
+# Kubernetes API Server Configuration
+# ============================================================================
+# IP address advertised to cluster members for API server access
+# Uses DNS resolution to get the node's external/internal IP
+kubernetes_apiserver_advertise_address: "{{ hostvars[inventory_hostname]['ansible_eno1']['ipv4']['address'] }}"
+
+# Port for secure API server communication (client API)
+kubernetes_apiserver_port: 6443
+
+# ============================================================================
+# Kubernetes Controller Manager Configuration
+# ============================================================================
+# IP address for controller manager to bind on (for metrics and health checks)
+# Uses same IP as API server for consistency and external monitoring access
+kubernetes_controller_manager_bind_address: "{{ hostvars[inventory_hostname]['ansible_eno1']['ipv4']['address'] }}"
+
+# Secure port for controller manager metrics and health endpoints
+kubernetes_controller_manager_secure_port: 10257

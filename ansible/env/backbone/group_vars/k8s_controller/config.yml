@@ -9,7 +9,7 @@
 
 # Assigns master and control-plane labels to the node
 kubernetes_node_labels:
-  node-role.kubernetes.io/master: ""
+  node-role.kubernetes.io/control-plane: ""
   openstack-control-plane: "enabled"
 
 # Taints applied to control-plane nodes to prevent scheduling of regular pods
