@@ -1,0 +1,18 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: kube_controller_manager
+################################################################################
+# Description :
+#   Default variables for the kube_controller_manager role.
+#   Provide baseline configuration values used by tasks if no override is set.
+#
+# Usage :
+#   - Reference: {{ kube_controller_manager_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+#
+# REQUIRED VARIABLES (must be defined by user):
+################################################################################
+
+---

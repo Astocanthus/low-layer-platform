@@ -1,0 +1,48 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate configuration paths are absolute"
+  assert:
+    that:
+      - kubernetes_config.path is match('^/')
+      - quadlet_root_container_path is match('^/')
+      - vault_agent_certs_path is match('^/')
+    fail_msg: "❌ All paths must be absolute (start with /)"
+    success_msg: "✅ All configuration paths are absolute"
+
+- name: "Validate bind address"
+  assert:
+    that:
+      - kubernetes_controller_manager_bind_address | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid bind address: {{ kubernetes_controller_manager_bind_address }}"
+    success_msg: "✅ Valid bind address: {{ kubernetes_controller_manager_bind_address }}"
+
+- name: "Validate Kubernetes Controller Manager Server port"
+  assert:
+    that:
+      - kubernetes_controller_manager_secure_port | int > 0
+      - kubernetes_controller_manager_secure_port | int <= 65535
+    fail_msg: "❌ Invalid Kubernetes Controller Manager Server port: {{ kubernetes_controller_manager_secure_port }}"
+    success_msg: "✅ Valid Kubernetes Controller Manager Server port: {{ kubernetes_controller_manager_secure_port }}"
+
+- name: "Validate Cluster IP range"
+  assert:
+    that:
+      - kubernetes_cluster_cidr.network | ansible.utils.ipaddr
+      - (kubernetes_cluster_cidr.netmask | int >= 1 and kubernetes_cluster_cidr.netmask | int <= 32)
+    fail_msg: "❌ Invalid Cluster IP range: {{ kubernetes_cluster_cidr }}"
+    success_msg: "✅ Valid Cluster IP range: {{ kubernetes_cluster_cidr.network }}/{{ kubernetes_cluster_cidr.netmask }}"
+
+- name: "Validate Service Cluster IP range"
+  assert:
+    that:
+      - kubernetes_service_cluster_ip_range_cidr.network | ansible.utils.ipaddr
+      - (kubernetes_service_cluster_ip_range_cidr.netmask | int >= 1 and kubernetes_service_cluster_ip_range_cidr.netmask | int <= 32)
+    fail_msg: "❌ Invalid Service Cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr }}"
+    success_msg: "✅ Valid Service Cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }}"

@@ -1,0 +1,29 @@
+# ============================================================================
+# Kube-controller-manager service
+# ============================================================================
+- name: Stop kube-controller-manager
+  # Stops the kube-controller-manager systemd service before reloading configuration
+  ansible.builtin.service:
+    name: kube-controller-manager
+    state: stopped
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _stop
+  until: _stop is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart kube-controller-manager
+
+- name: Start kube-controller-manager
+  # Starts and enables the kube-controller-manager systemd service
+  ansible.builtin.service:
+    name: kube-controller-manager
+    enabled: true
+    state: started
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _start
+  until: _start is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart kube-controller-manager

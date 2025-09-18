@@ -1,0 +1,98 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd unit file for running the Kubernetes Controller Manager in a 
+# containerized environment.
+#
+# Purpose:
+#   - The kube-controller-manager is a core control-plane component that runs
+#     controller processes responsible for regulating cluster state
+#   - Manages node lifecycle, endpoints, service accounts, replication
+#     controllers, and other cluster resources to maintain desired state
+#   - Ensures cluster resources match their declared specifications
+#
+# Key Functions:
+#   - Node Controller: Monitors node health and handles node failures
+#   - Replication Controller: Maintains correct number of pod replicas
+#   - Endpoints Controller: Manages service endpoints
+#   - Service Account & Token Controllers: Creates default accounts and tokens
+#   - Resource Quota Controller: Enforces resource usage limits
+#
+# Characteristics:
+#   - Runs in a container with host networking for cluster communication
+#   - Uses leader election for high availability in multi-master setups
+#   - Mounts certificates and kubeconfig from Vault-managed PKI
+#   - Auto-restarts on failure with exponential backoff
+# ============================================================================
+
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/
+After=network.target kube-apiserver.service
+PartOf=kubernetes.target
+
+[Container]
+Image=docker.io/rancher/hyperkube:{{ kubernetes_version_controller_manager }}
+ContainerName=kube-controller-manager
+
+# ============================================================================
+# Command Execution
+# ============================================================================
+Exec=kube-controller-manager \
+    --bind-address={{ kubernetes_controller_manager_bind_address }} \
+    --cluster-cidr={{ kubernetes_cluster_cidr["network"] }}/{{ kubernetes_cluster_cidr["netmask"] }} \
+    --cluster-name={{ kubernetes_cluster_name }} \
+    --cluster-signing-cert-file=/certs/kubernetes/ca.pem \
+    --controllers=*,-csrsigning \
+
+    --kubeconfig=/etc/kubernetes/controller-manager.conf \
+    --leader-elect=true \
+
+    --requestheader-client-ca-file=/certs/kubernetes/ca-front-proxy.pem \
+    --root-ca-file=/certs/kubernetes/ca.pem \
+    --service-account-private-key-file=/certs/kubernetes/sa.key \
+
+    --service-cluster-ip-range={{ kubernetes_service_cluster_ip_range_cidr["network"] }}/{{ kubernetes_service_cluster_ip_range_cidr["netmask"] }} \
+    --use-service-account-credentials=true \
+    --secure-port={{ kubernetes_controller_manager_secure_port }} \
+
+    --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf \
+    --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf \
+
+    --tls-cert-file=/certs/kubernetes/kube-controller-manager.pem \
+    --tls-private-key-file=/certs/kubernetes/kube-controller-manager.key \
+
+    --v=2
+
+# ============================================================================
+# Network
+# ============================================================================
+Network=host
+# SecurityLabelDisable=true
+
+# ============================================================================
+# Volumes
+# ============================================================================
+Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/sa.key:/certs/kubernetes/sa.key:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/kubernetes/ca.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/ca-front-proxy.pem:/certs/kubernetes/ca-front-proxy.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-controller-manager.pem:/certs/kubernetes/kube-controller-manager.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-controller-manager.key:/certs/kubernetes/kube-controller-manager.key:ro
+
+# ============================================================================
+# Capabilities
+# ============================================================================
+# Allow binding to privileged ports (e.g., 80, 443)
+AddCapability=NET_BIND_SERVICE
+
+# Allow exceeding system resource limits for optimal database/container performance
+AddCapability=SYS_RESOURCE
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

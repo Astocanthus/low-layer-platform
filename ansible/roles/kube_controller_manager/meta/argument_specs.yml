@@ -1,0 +1,104 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+argument_specs:
+  main:
+    short_description: "Deploy and configure Kubernetes Controller Manager in a container"
+    description: |
+      This role provisions and configures the Kubernetes Controller Manager
+      inside a containerized environment with systemd quadlet. It ensures
+      secure kubeconfig, proper cluster networking, and PKI integration.
+
+      Usage:
+        - Deploy controller-manager kubeconfig
+        - Deploy container unit for kube-controller-manager
+
+      Notes:
+        - Requires Vault Agent for PKI material
+        - Requires Podman with quadlet support
+        - Needs root privileges for networking and systemd
+
+    author: "Astocanthus <contact@low-layer.com>"
+
+    options:
+      kubernetes_version_controller_manager:
+        type: "str"
+        required: true
+        description: "Image tag or version of the kube-controller-manager to deploy"
+
+      kubernetes_controller_manager_bind_address:
+        type: "str"
+        required: true
+        description: "Bind address for the controller-manager API (usually 0.0.0.0 or node IP)"
+
+      kubernetes_controller_manager_secure_port:
+        type: "int"
+        default: 10257
+        description: "Secure HTTPS port for controller-manager API"
+
+      kubernetes_cluster_name:
+        type: "str"
+        required: true
+        description: "Logical name of the Kubernetes cluster"
+
+      kubernetes_cluster_cidr:
+        type: "dict"
+        required: true
+        description: "CIDR range for cluster networking"
+        options:
+          network:
+            type: "str"
+            required: true
+            description: "Cluster network base address"
+          netmask:
+            type: "int"
+            required: true
+            description: "Network mask in CIDR notation"
+
+      kubernetes_service_cluster_ip_range_cidr:
+        type: "dict"
+        required: true
+        description: "CIDR range for service cluster IPs"
+        options:
+          network:
+            type: "str"
+            required: true
+            description: "Service cluster network base address"
+          netmask:
+            type: "int"
+            required: true
+            description: "Network mask in CIDR notation"
+
+      kubernetes_config:
+        type: "dict"
+        required: true
+        description: "Kubernetes configuration path and permissions"
+        options:
+          path:
+            type: "str"
+            required: true
+            description: "Path to the Kubernetes configuration directory"
+          owner:
+            type: "str"
+            required: true
+            description: "File owner user"
+          group:
+            type: "str"
+            required: true
+            description: "File group"
+          mode:
+            type: "str"
+            required: true
+            description: "Directory permission mode (e.g., 0750)"
+
+      vault_agent_certs_path:
+        type: "str"
+        required: true
+        description: "Base path to Vault Agent certificates mounted into the container"
+
+      quadlet_root_container_path:
+        type: "str"
+        required: true
+        description: "Path to quadlet root container unit directory (e.g., /etc/containers/systemd)"

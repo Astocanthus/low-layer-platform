@@ -1,0 +1,41 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Create Kubernetes configuration
+# ============================================================================
+- name: Create kubernetes configuration directory
+  # Ensure /etc/kubernetes directory exists with secure permissions
+  ansible.builtin.file:
+    path:  "{{ kubernetes_config['path'] }}"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "{{ kubernetes_config['mode'] }}"
+    state: directory
+
+# ============================================================================
+# Deploy controller-manager kubeconfig
+# ============================================================================
+- name: Deploy controller-manager.conf
+  # Deploys the kubeconfig for kube-controller-manager
+  ansible.builtin.template:
+    src:   "conf/controller-manager.conf"
+    dest:  "{{ kubernetes_config['path'] }}/controller-manager.conf"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "0750"
+  notify:
+    - Restart kube-controller-manager
+
+# ============================================================================
+# Deploy container unit for kube-controller-manager
+# ============================================================================
+- name: Deploy Podman systemd unit for kube-controller-manager
+  # Installs the container unit file for kube-controller-manager
+  ansible.builtin.template:
+    src: "containers/kube-controller-manager.container"
+    dest: "{{ quadlet_root_container_path }}/kube-controller-manager.container"
+  notify:
+    - Restart kube-controller-manager
