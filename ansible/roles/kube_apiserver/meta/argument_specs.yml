@@ -79,7 +79,7 @@ argument_specs:
         required: true
         description: "Root path for Podman Quadlet container unit files"
 
-      vip_kubernetes_api_server:
+      vip_kubernetes_apiserver:
         type: "dict"
         required: true
         description: "VIP configuration for Kubernetes API Server"
@@ -102,7 +102,7 @@ argument_specs:
                 required: true
                 description: "Internal VIP netmask"
 
-      kubernetes_api_server_port:
+      kubernetes_apiserver_port:
         type: "int"
         required: true
         description: "Port exposed by the kube-apiserver"
@@ -111,7 +111,7 @@ argument_specs:
         type: "dict"
         description: "Version mapping for Kubernetes components"
         options:
-          api_server:
+          apiserver:
             type: "str"
             required: true
             description: "Version string for kube-apiserver image"

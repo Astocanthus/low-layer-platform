@@ -23,17 +23,17 @@
 - name: "Validate VIP Kubernetes API Server IP"
   assert:
     that:
-      - vip_kubernetes_api_server.internal.ip | ansible.utils.ipaddr
-    fail_msg: "❌ Invalid IP address: '{{ vip_kubernetes_api_server.internal.ip }}'"
-    success_msg: "✅ Valid VIP IP: {{ vip_kubernetes_api_server.internal.ip }}"
+      - vip_kubernetes_apiserver.internal.ip | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid IP address: '{{ vip_kubernetes_apiserver.internal.ip }}'"
+    success_msg: "✅ Valid VIP IP: {{ vip_kubernetes_apiserver.internal.ip }}"
 
 - name: "Validate Kubernetes API Server port"
   assert:
     that:
-      - kubernetes_api_server_port | int > 0
-      - kubernetes_api_server_port | int <= 65535
-    fail_msg: "❌ Invalid port: {{ kubernetes_api_server_port }}"
-    success_msg: "✅ Valid Kubernetes API Server port: {{ kubernetes_api_server_port }}"
+      - kubernetes_apiserver_port | int > 0
+      - kubernetes_apiserver_port | int <= 65535
+    fail_msg: "❌ Invalid port: {{ kubernetes_apiserver_port }}"
+    success_msg: "✅ Valid Kubernetes API Server port: {{ kubernetes_apiserver_port }}"
 
 - name: "Validate Service Cluster IP range"
   assert:
