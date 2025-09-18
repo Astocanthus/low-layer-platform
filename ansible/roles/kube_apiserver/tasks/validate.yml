@@ -27,12 +27,19 @@
     fail_msg: "❌ Invalid IP address: '{{ vip_kubernetes_apiserver.internal.ip }}'"
     success_msg: "✅ Valid VIP IP: {{ vip_kubernetes_apiserver.internal.ip }}"
 
+- name: "Validate advertise address"
+  assert:
+    that:
+      - kubernetes_apiserver_advertise_address | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid advertise address: {{ kubernetes_apiserver_advertise_address }}"
+    success_msg: "✅ Valid advertise address: {{ kubernetes_apiserver_advertise_address }}"
+
 - name: "Validate Kubernetes API Server port"
   assert:
     that:
       - kubernetes_apiserver_port | int > 0
       - kubernetes_apiserver_port | int <= 65535
-    fail_msg: "❌ Invalid port: {{ kubernetes_apiserver_port }}"
+    fail_msg: "❌ Invalid Kubernetes API Server port: {{ kubernetes_apiserver_port }}"
     success_msg: "✅ Valid Kubernetes API Server port: {{ kubernetes_apiserver_port }}"
 
 - name: "Validate Service Cluster IP range"
@@ -40,5 +47,5 @@
     that:
       - kubernetes_service_cluster_ip_range_cidr.network | ansible.utils.ipaddr
       - (kubernetes_service_cluster_ip_range_cidr.netmask | int >= 1 and kubernetes_service_cluster_ip_range_cidr.netmask | int <= 32)
-    fail_msg: "❌ Invalid service cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr }}"
-    success_msg: "✅ Valid service cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }}"
+    fail_msg: "❌ Invalid Service Cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr }}"
+    success_msg: "✅ Valid Service Cluster IP range: {{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }}"

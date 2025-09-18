@@ -102,6 +102,11 @@ argument_specs:
                 required: true
                 description: "Internal VIP netmask"
 
+      kubernetes_apiserver_advertise_address:
+        type: "str"
+        required: true
+        description: "IP address advertised to cluster members for API server access (node's external/internal IP for distributed clusters)"
+
       kubernetes_apiserver_port:
         type: "int"
         required: true

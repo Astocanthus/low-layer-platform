@@ -2,9 +2,29 @@
 # Contact : contact@low-layer.com
 
 # ============================================================================
-# Systemd unit file for running kube-apiserver in a containerized environment.
-# This configuration runs the Kubernetes API Server with Vault-issued certs,
-# OIDC integration, and high availability settings.
+# Systemd unit file for running the Kubernetes API Server in a containerized 
+# environment.
+#
+# Purpose:
+#   - The kube-apiserver is the central control-plane component that exposes
+#     the Kubernetes API and serves as the primary interface for all cluster
+#     operations and communications
+#   - Validates and processes REST operations (GET, POST, PUT, DELETE) for
+#     cluster resources like pods, services, deployments, and configurations
+#   - Acts as the gateway between kubectl, controllers, and the etcd datastore
+#
+# Key Functions:
+#   - API Gateway: Exposes RESTful API for all Kubernetes operations
+#   - Authentication & Authorization: Validates users via OIDC and enforces RBAC
+#   - Admission Control: Applies policies and validations before resource creation
+#   - Proxy & Aggregation: Routes requests to kubelets and aggregated APIs
+#   - Webhook Integration: Supports mutating and validating admission webhooks
+#
+# Characteristics:
+#   - Runs in a container with host networking on secure port 6443
+#   - Integrates with Vault for PKI certificate management and OIDC authentication
+#   - Uses etcd as the persistent storage backend for all cluster state
+#   - Auto-restarts on failure to ensure cluster API availability
 # ============================================================================
 
 [Unit]
@@ -18,7 +38,7 @@ Image=docker.io/rancher/hyperkube:{{ kubernetes_version_apiserver }}
 ContainerName=kube-apiserver
 
 Exec=kube-apiserver \
-    --advertise-address={{ lookup('dig', inventory_hostname) }} \
+    --advertise-address={{ kubernetes_apiserver_advertise_address }} \
 
     --authorization-mode=Node,RBAC \
     --allow-privileged=true \
@@ -53,7 +73,7 @@ Exec=kube-apiserver \
     --oidc-username-claim=username \
     --oidc-groups-claim=groups \
 
-    --service-cluster-ip-range={{ kubernetes_service_cluster_ip_range_cidr.network }}/{{ kubernetes_service_cluster_ip_range_cidr.netmask }} \
+    --service-cluster-ip-range={{ kubernetes_service_cluster_ip_range_cidr["network"] }}/{{ kubernetes_service_cluster_ip_range_cidr["netmask"] }} \
 
     --tls-cert-file=/certs/kube-apiserver.pem \
     --tls-private-key-file=/certs/kube-apiserver.key \
