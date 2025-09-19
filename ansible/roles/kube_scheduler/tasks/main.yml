@@ -1,0 +1,13 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+- name: Validate kube-scheduler variables constraints
+  # Apply validate tasks
+  ansible.builtin.include_tasks: validate.yml
+
+- name: Configure kube-scheduler
+  # Apply kube-scheduler tasks
+  # Includes runtime and configurations
+  ansible.builtin.include_tasks: configure.yml

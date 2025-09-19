@@ -1,0 +1,39 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION - Kubernetes Scheduler
+# ============================================================================
+
+- name: "Validate configuration paths are absolute"
+  assert:
+    that:
+      - kubernetes_config.path is match('^/')
+      - quadlet_root_container_path is match('^/')
+      - vault_agent_certs_path is match('^/')
+    fail_msg: "❌ All paths must be absolute (start with /)"
+    success_msg: "✅ All configuration paths are absolute"
+
+- name: "Validate kubeconfig directory permissions"
+  assert:
+    that:
+      - kubernetes_config.mode is match('^[0-7]{3,4}$')
+    fail_msg: "❌ Invalid mode for kubernetes_config: {{ kubernetes_config.mode }}"
+    success_msg: "✅ Valid mode for kubernetes_config: {{ kubernetes_config.mode }}"
+
+- name: "Validate scheduler bind address"
+  assert:
+    that:
+      - kubernetes_scheduler_bind_address | ansible.utils.ipaddr
+    fail_msg: "❌ Invalid scheduler bind address: {{ kubernetes_scheduler_bind_address }}"
+    success_msg: "✅ Valid scheduler bind address: {{ kubernetes_scheduler_bind_address }}"
+
+- name: "Validate scheduler secure port"
+  assert:
+    that:
+      - kubernetes_scheduler_secure_port | int > 0
+      - kubernetes_scheduler_secure_port | int <= 65535
+    fail_msg: "❌ Invalid scheduler secure port: {{ kubernetes_scheduler_secure_port }}"
+    success_msg: "✅ Valid scheduler secure port: {{ kubernetes_scheduler_secure_port }}"

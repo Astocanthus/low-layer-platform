@@ -1,0 +1,88 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd unit file for running the Kubernetes Scheduler in a 
+# containerized environment.
+#
+# Purpose:
+#   - The kube-scheduler is a core control-plane component responsible for
+#     selecting optimal nodes for newly created pods based on resource
+#     requirements, constraints, and scheduling policies
+#   - Makes scheduling decisions but does not actually place pods on nodes
+#     (kubelet handles the actual pod creation)
+#
+# Key Functions:
+#   - Node Selection: Evaluates available nodes against pod requirements
+#   - Resource Awareness: Considers CPU, memory, storage, and custom resources
+#   - Affinity/Anti-affinity: Respects pod and node affinity rules
+#   - Taints & Tolerations: Manages node taints and pod tolerations
+#   - Quality of Service: Prioritizes pods based on QoS classes
+#   - Custom Scheduling: Supports custom schedulers and scheduler extenders
+#
+# Scheduling Process:
+#   1. Filtering: Eliminates nodes that don't meet pod requirements
+#   2. Scoring: Ranks remaining nodes based on scheduling policies
+#   3. Selection: Chooses the highest-scoring node for pod placement
+#
+# Characteristics:
+#   - Runs in a container with host networking for API server communication
+#   - Uses leader election for high availability in multi-master setups
+#   - Stateless component - all state is stored in etcd via API server
+#   - Auto-restarts on failure with exponential backoff
+# ============================================================================
+
+[Unit]
+Description=Kubernetes Scheduler
+Documentation=https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/
+After=network.target kube-apiserver.service
+PartOf=kubernetes.target
+
+[Container]
+Image=docker.io/rancher/hyperkube:{{ kubernetes_version_scheduler }}
+ContainerName=kube-scheduler
+
+# ============================================================================
+# Command Execution
+# ============================================================================
+Exec=kube-scheduler \
+    --bind-address={{ kubernetes_scheduler_bind_address }} \
+    --secure-port={{ kubernetes_scheduler_secure_port }} \
+    
+    --leader-elect=true \
+
+    --kubeconfig=/etc/kubernetes/scheduler.conf \
+    --authentication-kubeconfig=/etc/kubernetes/scheduler.conf \
+    --authorization-kubeconfig=/etc/kubernetes/scheduler.conf \
+
+    --v=2
+
+# ============================================================================
+# Network Configuration
+# ============================================================================
+# Host networking required for direct communication with API server
+Network=host
+# SecurityLabelDisable=true
+
+# ============================================================================
+# Volume Mounts
+# ============================================================================
+# Kubernetes configuration files (kubeconfig, etc.)
+Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
+
+# Certificate Authority for cluster trust
+Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/kubernetes/ca.pem:ro
+
+# Scheduler-specific certificates for secure communication
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-scheduler.pem:/certs/kubernetes/kube-scheduler.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-scheduler.key:/certs/kubernetes/kube-scheduler.key:ro
+
+# ============================================================================
+# Service Configuration
+# ============================================================================
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

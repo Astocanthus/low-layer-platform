@@ -1,0 +1,41 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# Create Kubernetes configuration
+# ============================================================================
+- name: Create kubernetes configuration directory
+  # Ensure /etc/kubernetes directory exists with secure permissions
+  ansible.builtin.file:
+    path:  "{{ kubernetes_config['path'] }}"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "{{ kubernetes_config['mode'] }}"
+    state: directory
+
+# ============================================================================
+# Deploy scheduler kubeconfig
+# ============================================================================
+- name: Deploy scheduler.conf
+  # Deploys the kubeconfig for kube-scheduler
+  ansible.builtin.template:
+    src:   "conf/scheduler.conf"
+    dest:  "{{ kubernetes_config['path'] }}/scheduler.conf"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "0750"
+  notify:
+    - Restart kube-scheduler
+
+# ============================================================================
+# Deploy container unit for kube-scheduler
+# ============================================================================
+- name: Deploy Podman systemd unit for kube-scheduler
+  # Installs the container unit file for kube-scheduler
+  ansible.builtin.template:
+    src: "containers/kube-scheduler.container"
+    dest: "{{ quadlet_root_container_path }}/kube-scheduler.container"
+  notify:
+    - Restart kube-scheduler

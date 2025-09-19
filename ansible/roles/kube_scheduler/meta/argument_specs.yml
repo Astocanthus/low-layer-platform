@@ -1,0 +1,76 @@
+argument_specs:
+  main:
+    short_description: "Deploy and configure Kubernetes scheduler with Podman container"
+    description: |
+      This role deploys the Kubernetes scheduler (`kube-scheduler`) as a
+      containerized systemd-managed service. It ensures required
+      configuration files, kubeconfig, and TLS certificates are present
+      and applies resource limits.
+
+      Usage:
+        - Ensure Vault Agent or other PKI system provides the required certificates.
+        - Variables can be tuned for bind address, ports, and resource usage.
+      
+      Notes:
+        - Requires root privileges for privileged ports and systemd unit installation.
+        - Host networking is used for direct API server communication.
+
+    author: "Astocanthus <contact@low-layer.com>"
+
+    options:
+      kubernetes_config:
+        type: dict
+        required: true
+        description: "Configuration for Kubernetes scheduler kubeconfig directory"
+        options:
+          path:
+            type: str
+            required: true
+            description: "Path to Kubernetes configuration directory (e.g. /etc/kubernetes)"
+          owner:
+            type: str
+            default: "root"
+            description: "File owner for configuration directory"
+          group:
+            type: str
+            default: "root"
+            description: "Group for configuration directory"
+          mode:
+            type: str
+            default: "0750"
+            description: "File permissions for configuration directory"
+
+      quadlet_root_container_path:
+        type: str
+        required: true
+        description: "Root path for quadlet container units (e.g. /etc/containers/systemd)"
+
+      kubernetes_version_scheduler:
+        type: str
+        required: true
+        description: "Container image version for kube-scheduler (e.g. v1.32.0)"
+
+      kubernetes_scheduler_bind_address:
+        type: str
+        default: "0.0.0.0"
+        description: "Bind address for kube-scheduler API"
+
+      kubernetes_scheduler_secure_port:
+        type: int
+        default: 10259
+        description: "Secure port for kube-scheduler API server"
+
+      vault_agent_certs_path:
+        type: str
+        required: true
+        description: "Base path to certificates provided by Vault Agent"
+
+      kubernetes_scheduler_memory_limit:
+        type: str
+        default: "512M"
+        description: "Memory limit for kube-scheduler container"
+
+      kubernetes_scheduler_cpu_quota:
+        type: str
+        default: "50%"
+        description: "CPU quota for kube-scheduler container"
