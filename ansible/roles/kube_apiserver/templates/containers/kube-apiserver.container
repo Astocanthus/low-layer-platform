@@ -37,6 +37,9 @@ PartOf=kubernetes.target
 Image=docker.io/rancher/hyperkube:{{ kubernetes_version_apiserver }}
 ContainerName=kube-apiserver
 
+# ============================================================================
+# Command Execution
+# ============================================================================
 Exec=kube-apiserver \
     --advertise-address={{ kubernetes_apiserver_advertise_address }} \
 
@@ -89,16 +92,29 @@ Network=host
 # ============================================================================
 # Volumes
 # ============================================================================
+# System Certificate Authority trust stores for external certificate validation
 Volume={{ system_pki_ca_trust_path }}:{{ system_pki_ca_trust_path }}:ro
 Volume={{ system_ssl_certs_path }}:{{ system_ssl_certs_path }}:ro
+
+# Kubernetes cluster Certificate Authority for internal certificate validation
 Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/ca.pem:ro
+
+# Service Account public key for token validation & signing
 Volume={{ vault_agent_certs_path }}/kubernetes/sa.pem:/certs/sa.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/sa.key:/certs/sa.key:ro
+
+# Front proxy CA for aggregated API server and extension API server trust
 Volume={{ vault_agent_certs_path }}/kubernetes/ca-front-proxy.pem:/certs/ca-front-proxy.pem:ro
-Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.pem:/certs/kube-apiserver-kubelet-client.pem:ro
-Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.key:/certs/kube-apiserver-kubelet-client.key:ro
+
+# Front proxy client certificate for API aggregation layer authentication
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-front-proxy-client.pem:/certs/kube-front-proxy-client.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-front-proxy-client.key:/certs/kube-front-proxy-client.key:ro
+
+# Client certificate for API server to authenticate with kubelet
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.pem:/certs/kube-apiserver-kubelet-client.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver-kubelet-client.key:/certs/kube-apiserver-kubelet-client.key:ro
+
+# API server TLS certificate for serving HTTPS clients
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver.pem:/certs/kube-apiserver.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-apiserver.key:/certs/kube-apiserver.key:ro
 

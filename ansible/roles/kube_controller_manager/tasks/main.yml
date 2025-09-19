@@ -3,11 +3,11 @@
 
 ---
 
-- name: Validate kube-apiserver variables constraints
+- name: Validate kube-controller-manager variables constraints
   # Apply validate tasks
   ansible.builtin.include_tasks: validate.yml
 
-- name: Configure kube-apiserver
-  # Apply kube-apiserver tasks
+- name: Configure kube-controller-manager
+  # Apply kube-controller-manager tasks
   # Includes runtime and configurations
   ansible.builtin.include_tasks: configure.yml

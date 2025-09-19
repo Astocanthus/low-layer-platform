@@ -74,9 +74,16 @@ Network=host
 # ============================================================================
 # Volumes
 # ============================================================================
+# Kubernetes configuration files (kubeconfig, etc.)
 Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
-Volume={{ vault_agent_certs_path }}/kubernetes/sa.key:/certs/kubernetes/sa.key:ro
+
+# Certificate Authority for cluster trust
 Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/kubernetes/ca.pem:ro
+
+# Service Account private key for token signing and validation
+Volume={{ vault_agent_certs_path }}/kubernetes/sa.key:/certs/kubernetes/sa.key:ro
+
+# Controller-Manager-specific certificates for secure communication
 Volume={{ vault_agent_certs_path }}/kubernetes/ca-front-proxy.pem:/certs/kubernetes/ca-front-proxy.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-controller-manager.pem:/certs/kubernetes/kube-controller-manager.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kube-controller-manager.key:/certs/kubernetes/kube-controller-manager.key:ro
