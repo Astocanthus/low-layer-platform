@@ -1,6 +1,13 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
 
+---
 
+# ============================================================================
+# Install python3-kubernetes package
+# ============================================================================
 - name: Install python3-kubernetes to call API
+  # Installs the python3-kubernetes package via rpm-ostree for API interaction
   community.general.rpm_ostree_pkg:
     name: 
       - "python3-kubernetes-{{ python_version_kubernetes }}"
@@ -8,15 +15,24 @@
   register: kubernetes_install
 
 - name: Restart node to apply python3-kubernetes
+  # Reboots the node to apply newly installed Python packages
   ansible.builtin.reboot:
     reboot_timeout: 600
     pre_reboot_delay: 5
     post_reboot_delay: 10
   when: kubernetes_install.changed
 
+# ============================================================================
+# Flush handlers after reboot
+# ============================================================================
 - meta: flush_handlers
+  # Ensures that any pending notifications are executed before continuing
 
+# ============================================================================
+# Retrieve Kubernetes token from Vault
+# ============================================================================
 - name: Read Kubernetes token from Vault
+  # Fetches a Kubernetes OIDC token from Vault using userpass authentication
   community.hashi_vault.vault_read:
     url:         "{{ vault_addr }}"
     path:        "identity/oidc/token/{{ vault_oidc_client_id }}"
@@ -31,7 +47,11 @@
   delegate_to: localhost
   become: false
 
+# ============================================================================
+# Apply labels and taints to Kubernetes node
+# ============================================================================
 - name: Apply labels and taints to Kubernetes node
+  # Updates the node object in Kubernetes with provided labels and taints
   kubernetes.core.k8s:
     api_version: "v1"
     kind:        "Node"

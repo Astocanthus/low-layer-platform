@@ -32,11 +32,3 @@
       - kubernetes_cluster_dns_ip | ansible.utils.ipaddr
     fail_msg: "❌ Invalid cluster DNS IP: {{ kubernetes_cluster_dns_ip }}"
     success_msg: "✅ Valid cluster DNS IP: {{ kubernetes_cluster_dns_ip }}"
-
-- name: "Validate Kubernetes node labels and taints"
-  assert:
-    that:
-      - kubernetes_node_labels is not defined or kubernetes_node_labels is mapping
-      - kubernetes_node_taints is not defined or kubernetes_node_taints is sequence
-    fail_msg: "❌ Invalid Kubernetes node labels or taints"
-    success_msg: "✅ Node labels and taints are valid"

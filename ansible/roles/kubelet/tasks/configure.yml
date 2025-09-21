@@ -1,7 +1,13 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
 ---
 
+# ============================================================================
+# Create Kubernetes configuration directory
+# ============================================================================
 - name: Create kubernetes configuration directory
-  # Ensure /etc/kubernetes directory exists with secure permissions
+  # Ensure the main Kubernetes configuration directory exists with proper ownership and permissions
   ansible.builtin.file:
     path:  "{{ kubernetes_config['path'] }}"
     owner: "{{ kubernetes_config['owner'] }}"
@@ -9,8 +15,11 @@
     mode:  "{{ kubernetes_config['mode'] }}"
     state: directory
 
+# ============================================================================
+# Create Kubelet configuration directory
+# ============================================================================
 - name: Create kubelet configuration directory
-  # Ensure /etc/kubelet directory exists with secure permissions
+  # Ensure the kubelet configuration directory exists with secure ownership and permissions
   ansible.builtin.file:
     path:  "{{ kubelet_config['path'] }}"
     owner: "{{ kubelet_config['owner'] }}"
@@ -18,24 +27,32 @@
     mode:  "{{ kubelet_config['mode'] }}"
     state: directory
 
+# ============================================================================
+# Deploy kubelet configuration files
+# ============================================================================
 - name: Deploy kubelet config
+  # Deploy configuration files for kubelet, including main config and kubelet.conf
   ansible.builtin.template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src:   "{{ item.src }}"
+    dest:  "{{ item.dest }}"
     owner: "{{ kubelet_config['owner'] }}"
     group: "{{ kubelet_config['group'] }}"
     mode: '0750'
   with_items:
-    - src: "manifest/config.yaml"
+    - src:  "manifest/config.yaml"
       dest: "{{ kubelet_config['path'] }}/kubelet-config.yaml"
     - src: "conf/kubelet.conf"
-      dest: "{{ kubelet_config['path'] }}/kubelet.conf"
+      dest:  "{{ kubelet_config['path'] }}/kubelet.conf"
   notify:
     - Restart kubelet
 
+# ============================================================================
+# Deploy Podman systemd unit for kubelet
+# ============================================================================
 - name: Deploy Podman systemd unit for kubelet
+  # Deploy the container unit file for kubelet to run under Podman systemd integration
   ansible.builtin.template:
-    src: "containers/kubelet.container"
+    src:  "containers/kubelet.container"
     dest: "{{ quadlet_root_container_path }}/kubelet.container"
   notify:
     - Restart kubelet
