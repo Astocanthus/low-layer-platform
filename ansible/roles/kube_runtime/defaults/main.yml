@@ -1,0 +1,18 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+################################################################################
+# DEFAULT VARIABLES ROLE: kube_runtime
+################################################################################
+# Description :
+#   Default variables for the kube_runtime role.
+#   Provide baseline configuration values used by tasks if no override is set.
+#
+# Usage :
+#   - Reference: {{ kube_runtime_var_name }}
+#   - Can be overridden by role parameters, playbook vars, or extra-vars.
+#
+# REQUIRED VARIABLES (must be defined by user):
+################################################################################
+
+---

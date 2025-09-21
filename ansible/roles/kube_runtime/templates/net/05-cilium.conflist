@@ -1,0 +1,12 @@
+{
+  "cniVersion": "0.4.0",
+  "name": "cilium",
+  "plugins": [
+    {
+      "type": "cilium-cni",
+      "enable-debug": false,
+      "log-file": "/var/run/cilium/cilium-cni.log",
+      "log-level": "info"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# CRI-O installation and configuration
+################################################################################
+
+# ============================================================================
+# Install CRI-O and cri-tools packages using rpm-ostree
+# ============================================================================
+- name: Install CRI-O and tools package
+  # Installs CRI-O and cri-tools packages at the specified version
+  community.general.rpm_ostree_pkg:
+    name:
+      - "cri-o-{{ kubernetes_version_crio }}"
+      - "cri-tools-{{ kubernetes_version_cri_tools }}"
+    state: present
+  register: crio_install
+
+- name: Restart node to apply CRI-O configs
+  # Ensures system reboot to finalize CRI-O installation if required
+  ansible.builtin.reboot:
+    test_command: "crio --version"
+    reboot_timeout: 600
+  when: crio_install.changed

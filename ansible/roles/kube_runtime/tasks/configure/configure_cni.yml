@@ -1,0 +1,70 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# CNI plugins installation and configuration
+################################################################################
+
+# ============================================================================
+# Ensure CNI directories exist
+# ============================================================================
+- name: Create CNI configuration directory
+  # Creates CNI bin/config directories with correct permissions
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ runtime_cni['owner'] }}"
+    group: "{{ runtime_cni['group'] }}"
+    mode:  "{{ runtime_cni['mode'] }}"
+    state: directory
+  with_items:
+    - "{{ runtime_cni['bin_path'] }}"
+
+# ============================================================================
+# Install CNI plugins
+# ============================================================================
+- name: Download CNI plugins
+  # Downloads CNI plugin binaries archive from official release
+  ansible.builtin.get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ kubernetes_version_cni }}/cni-plugins-linux-amd64-v{{ kubernetes_version_cni }}.tgz"
+    dest: "/tmp/cni-plugins.tgz"
+    mode: "0644"
+
+- name: Install CNI plugins at {{ runtime_cni['bin_path'] }}
+  # Extracts and installs CNI binaries into the runtime bin directory
+  ansible.builtin.unarchive:
+    src: "/tmp/cni-plugins.tgz"
+    dest: "{{ runtime_cni['bin_path'] }}"
+    mode: "0755"
+    remote_src: yes
+
+# ============================================================================
+# Install network config files
+# ============================================================================
+- name: Find all network files (default values) from {{ runtime_cni['net_config_path'] }}
+  # Collects list of default network configuration files to clean up
+  ansible.builtin.find:
+    paths: "{{ runtime_cni['net_config_path'] }}"
+    file_type: file
+    excludes: 
+      - "*cilium*"
+  register: network_config_files_to_delete
+
+- name: Flush all network configuration files
+  # Removes all discovered default network configuration files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ network_config_files_to_delete.files }}"
+  when: network_config_files_to_delete.files | length > 0
+
+# ============================================================================
+# Update CRI-O plugin_dirs configuration
+# ============================================================================
+- name: Replace plugin_dirs bin path value
+  # Replaces plugin_dirs value in CRI-O config with CNI bin path
+  ansible.builtin.replace:
+    path:    "{{ runtime_crio_config_path }}"
+    regexp:  "plugin_dirs\\s*=\\s*\\[\\s*([^\\]]|\n)*\\]"
+    replace: "plugin_dirs = [\"{{ runtime_cni['bin_path'] }}\"]"

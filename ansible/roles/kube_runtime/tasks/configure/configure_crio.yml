@@ -1,0 +1,32 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# CRI-O runtime configuration
+################################################################################
+
+# ============================================================================
+# Configure CRI-O parameters in runtime config file
+# ============================================================================
+- name: Configure CRI-O
+  # Updates CRI-O configuration file with runtime and network parameters
+  ansible.builtin.ini_file:
+    path:    "{{ runtime_crio_config_path }}"
+    section: "{{ item.section }}"
+    option:  "{{ item.option }}"
+    value:   "{{ item.value }}"
+    no_extra_spaces: yes
+  with_items:
+    - section: "crio.network"
+      option:  "network_dir"
+      value:   "\"{{ runtime_cni['net_config_path'] }}\""
+
+    - section: "crio.runtime"
+      option:  "conmon_cgroup"
+      value:   "\"pod\""
+
+    - section: "crio.runtime"
+      option:  "cgroup_manager"
+      value:   "\"cgroupfs\""

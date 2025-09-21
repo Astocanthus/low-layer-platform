@@ -39,12 +39,3 @@ kernel_modules_path: "/lib/modules"
 
 # Absolute path to the system's resolver configuration file.
 host_resolvconf_path: "/run/systemd/resolve/resolv.conf"
-
-# Path to the container runtime socket (CRI-O in this case)
-host_container_runtime_path: "/var/run/crio/crio.sock"
-
-# Container runtime socket URI
-host_container_runtime_socket_path: "unix://{{ host_container_runtime_path }}"
-
-# Path to the host cgroup filesystem (used for resource isolation and accounting)
-host_cgroup_fs_path: "/sys/fs/cgroup"

@@ -1,0 +1,73 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Cilium configuration deployment
+################################################################################
+
+# ============================================================================
+# Define list of Cilium configuration files
+# ============================================================================
+- name: Define cilium config files
+  # Defines source and destination mapping for all Cilium-related configs
+  ansible.builtin.set_fact:
+    cilium_config_files:
+      - src:  "net/05-cilium.conflist"
+        dest: "{{ runtime_cni['net_config_path'] }}/05-cilium.conflist"
+        force: no  # Don't overwrite if exists (managed by Istio/K8s)
+      - src:  "net/99-cilium.conf"
+        dest: "/etc/sysctl.d/99-cilium.conf"
+        force: yes  # Always update
+      - src:  "net/cilium.conf"
+        dest: "/etc/modules-load.d/cilium.conf"
+        force: yes  # Always update
+
+# ============================================================================
+# Check if Cilium config files require update
+# ============================================================================
+- name: Check if cilium config files need to be updated
+  # Runs template in check_mode to detect changes without writing
+  ansible.builtin.template:
+    src:   "{{ item.src }}"
+    dest:  "{{ item.dest }}"
+    owner: "{{ runtime_cni['owner'] }}"
+    group: "{{ runtime_cni['group'] }}"
+    mode:  "0644"
+    force: "{{ item.force }}"
+    backup: no
+  check_mode: yes
+  register: cilium_config_check
+  with_items: "{{ cilium_config_files }}"
+
+# ============================================================================
+# Deploy new Cilium configuration files if necessary
+# ============================================================================
+- name: Set fact if any cilium config needs update
+  # Marks config update necessity based on check_mode results
+  ansible.builtin.set_fact:
+    cilium_config_needs_update: "{{ cilium_config_check.results | selectattr('changed', 'equalto', true) | list | length > 0 }}"
+
+- name: Stop crio for update cilium config
+  # Stops CRI-O service safely before Cilium config deployment
+  ansible.builtin.service:
+    name: crio
+    state: stopped
+    daemon_reload: yes
+  when: cilium_config_needs_update | bool
+
+- name: Deploy cilium config file
+  # Applies all updated Cilium configuration files
+  ansible.builtin.template:
+    src:   "{{ item.src }}"
+    dest:  "{{ item.dest }}"
+    owner: "{{ runtime_cni['owner'] }}"
+    group: "{{ runtime_cni['group'] }}"
+    mode:  "0644"
+    force: "{{ item.force }}"
+  with_items: "{{ cilium_config_files }}"
+  when: cilium_config_needs_update | bool
+  notify:
+    - Restart crio
+    - Restart kubelet

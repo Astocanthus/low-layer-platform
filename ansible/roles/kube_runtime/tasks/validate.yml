@@ -1,0 +1,17 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+# ============================================================================
+# VARIABLES VALIDATION
+# ============================================================================
+
+- name: "Validate runtime paths are absolute"
+  ansible.builtin.assert:
+    that:
+      - runtime_crio_config_path is match('^/')
+      - runtime_cni.bin_path is match('^/')
+      - runtime_cni.net_config_path is match('^/')
+    fail_msg: "❌ All runtime paths must be absolute (start with /)"
+    success_msg: "✅ All runtime paths are absolute"

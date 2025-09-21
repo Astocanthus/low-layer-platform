@@ -1,0 +1,33 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Main entrypoint for role: kube-runtime
+################################################################################
+# Description:
+#   This file orchestrates the execution of all subtasks in the role.
+#   It validates input variables, installs runtime components,
+#   and configures CRI-O, CNI, and Cilium for Kubernetes.
+################################################################################
+
+- name: Validate kube-runtime variables constraints
+  # Apply validate tasks to ensure correctness before proceeding
+  ansible.builtin.include_tasks: validate.yml
+
+- name: Install CRI-O
+  # Install container runtime CRI-O and related tools
+  ansible.builtin.include_tasks: install.yml
+
+- name: Configure CNI
+  # Deploy and configure Container Network Interface plugins
+  ansible.builtin.include_tasks: configure/configure_cni.yml
+
+- name: Configure CRI-O
+  # Apply runtime configuration for CRI-O
+  ansible.builtin.include_tasks: configure/configure_crio.yml
+
+- name: Configure Cilium
+  # Deploy and configure Cilium networking plugin
+  ansible.builtin.include_tasks: configure/configure_cilium.yml

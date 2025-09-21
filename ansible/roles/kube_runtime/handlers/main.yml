@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Handlers for systemd-managed services
+################################################################################
+
+# ============================================================================
+# Crio
+# ============================================================================
+- name: Stop crio
+  # Stops the crio systemd service before reloading configuration
+  ansible.builtin.service:
+    name: crio
+    state: stopped
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _stop_crio
+  until: _stop_crio is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart crio
+
+- name: Start crio
+  # Starts and enables the crio systemd service
+  ansible.builtin.service:
+    name: crio
+    enabled: true
+    state: started
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _start_crio
+  until: _start_crio is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart crio

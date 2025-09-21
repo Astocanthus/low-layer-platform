@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+################################################################################
+# Group Variables for Container Runtime configurations
+################################################################################
+
+# ============================================================================
+# Cgroup driver configuration
+# ============================================================================
+# Defines which cgroup driver the kubelet uses for resource management.
+# Options: systemd, cgroupfs
+cgroup_driver: "cgroupfs"
+
+# Path to the cgroup filesystem used for resource isolation and accounting
+runtime_cgroup_fs_path: "/sys/fs/cgroup"
+
+# ============================================================================
+# Runtime CNI configuration
+# ============================================================================
+runtime_cni:
+  net_config_path: "/etc/cni/net.d" # Path where CNI network configuration files are stored
+  bin_path: "/opt/cni/bin"          # Path where CNI binaries are installed
+  owner: "root"
+  group: "root"
+  mode: "0750"                      # Permissions (rwxr-x---)
+
+# ============================================================================
+# CRI-O configuration
+# ============================================================================
+# Path to the CRI-O configuration file
+runtime_crio_config_path: "/etc/crio/crio.conf"
+
+# Path to the CRI-O runtime socket
+runtime_crio_path: "/var/run/crio/crio.sock"
+
+# Full URI for the CRI-O container runtime socket
+runtime_crio_socket_path: "unix://{{ runtime_crio_path }}"

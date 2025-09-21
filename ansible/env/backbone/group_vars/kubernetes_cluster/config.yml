@@ -13,6 +13,9 @@
 # Unique identifier for the Kubernetes cluster instance
 kubernetes_cluster_name: "kubernetes-low-layer"
 
+# Domain name for the Kubernetes cluster
+cluster_domain: "cluster.local"
+
 # ============================================================================
 # Directory Structure & Permissions
 # ============================================================================
@@ -48,13 +51,3 @@ kubernetes_service_cluster_ip_range_cidr:
 # Kubernetes DNS service IP
 # Virtual IP assigned to the kube-dns/CoreDNS service inside the cluster
 kubernetes_cluster_dns_ip: 10.96.0.10
-
-# ============================================================================
-# Cluster general configuration
-# ============================================================================
-# Cgroup driver used by the kubelet for resource management.
-# Options: systemd, cgroupfs
-cgroup_driver: "cgroupfs"
-
-# Domain name for the Kubernetes cluster
-cluster_domain: "cluster.local"
