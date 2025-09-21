@@ -1,0 +1,113 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# ============================================================================
+# Systemd unit file for running kubelet in a containerized environment.
+#
+# Purpose:
+#   - kubelet is the primary node agent in Kubernetes, responsible for
+#     managing the lifecycle of pods, reporting node status, and enforcing
+#     resource allocation.
+#   - Runs in a container with host networking for direct API server communication.
+#
+# Key Functions:
+#   - Pod lifecycle management: Creates, updates, and deletes pods on the node.
+#   - Node status reporting: Reports CPU, memory, and pod conditions to the API server.
+#   - Secret & certificate management: Mounts necessary certificates from Vault for secure API communication.
+#   - Resource enforcement: Applies cgroup limits for CPU and memory.
+#   - Health & restart: Supports automatic restarts on failure.
+#
+# Characteristics:
+#   - Requires privileged capabilities for managing networking and system resources.
+#   - Mounts host paths for Kubernetes configuration, logs, and runtime.
+#   - Stateless container: all persistent state is stored on host volumes.
+#   - Designed for high availability and resiliency in multi-node clusters.
+# ============================================================================
+
+[Unit]
+Description=kubelet
+After=network.target crio.service
+Requires=crio.service
+PartOf=kubernetes.target
+
+[Container]
+# Container image and name
+Image=docker.io/rancher/hyperkube:{{ kubernetes_version_kubelet }}
+ContainerName=kubelet
+
+# ============================================================================
+# Command Execution
+# ============================================================================
+Exec=kubelet \
+    --config=/etc/kubernetes/kubelet-config.yaml \
+    --kubeconfig=/etc/kubernetes/kubelet.conf \
+    --node-ip={{ kubernetes_node_ip }} \
+#    --pod-manifest-path=/etc/kubernetes/manifests \ # Not need for now, full system deploy managed by terraform
+    --hostname-override={{ inventory_hostname }} \
+    --v=2
+
+# ============================================================================
+# Network Configuration
+# ============================================================================
+Network=host
+# SecurityLabelDisable=true
+
+# ============================================================================
+# Container Capabilities
+# ============================================================================
+# Needed for managing system resources and cgroups.
+AddCapability=SYS_ADMIN
+
+# Allows network configuration (routing, interfaces, iptables).
+AddCapability=NET_ADMIN
+
+# Allows binding to privileged ports (<1024).
+AddCapability=NET_BIND_SERVICE
+
+# Allows reading arbitrary files and traversing directories for kubelet operations.
+AddCapability=DAC_READ_SEARCH
+
+# Allows changing ownership of files, necessary for pod volume management.
+AddCapability=CHOWN
+
+# Required for file ownership checks in container volumes.
+AddCapability=FOWNER
+
+# Needed for setting group ID on files or processes.
+AddCapability=SETGID
+
+# Needed for setting user ID on files or processes.
+AddCapability=SETUID
+
+# Unwanted WIP : https://github.com/Astocanthus/low-layer-platform/issues/10
+PodmanArgs=--privileged --pid=host
+
+# ============================================================================
+# Volume Mounts
+# ============================================================================
+# Kubernetes configuration
+Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
+
+# Kubelet state directory
+Volume={{ kubelet_config['path'] }}:/var/lib/kubelet:rshared
+
+# Host runtime, resolv.conf, cgroup filesystem, kernel modules
+Volume={{ host_container_runtime_path }}:{{ host_container_runtime_path }}
+Volume={{ host_resolvconf_path }}:{{ host_resolvconf_path }}:ro
+Volume={{ host_cgroup_fs_path }}:{{ host_cgroup_fs_path }}:rw
+Volume={{ kernel_modules_path }}:{{ kernel_modules_path }}:ro
+
+# Certificates for secure communication with API server
+Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/ca.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kubelet.pem:/certs/kubernetes/kubelet.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/kubelet.key:/certs/kubernetes/kubelet.key:ro
+
+# Host logs
+Volume=/var/log:/var/log
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

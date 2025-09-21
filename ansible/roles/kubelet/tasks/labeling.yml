@@ -1,0 +1,50 @@
+
+
+- name: Install python3-kubernetes to call API
+  community.general.rpm_ostree_pkg:
+    name: 
+      - "python3-kubernetes-{{ python_version_kubernetes }}"
+    state: present
+  register: kubernetes_install
+
+- name: Restart node to apply python3-kubernetes
+  ansible.builtin.reboot:
+    reboot_timeout: 600
+    pre_reboot_delay: 5
+    post_reboot_delay: 10
+  when: kubernetes_install.changed
+
+- meta: flush_handlers
+
+- name: Read Kubernetes token from Vault
+  community.hashi_vault.vault_read:
+    url:         "{{ vault_addr }}"
+    path:        "identity/oidc/token/{{ vault_oidc_client_id }}"
+    mount_point: "kubernetes-userpass"
+    auth_method: "userpass"
+    username:    "{{ vault_oidc_username }}"
+    password:    "{{ vault_oidc_password }}"
+  register: vault_k8s_token
+  until: vault_k8s_token is succeeded
+  retries: 10
+  delay: 10
+  delegate_to: localhost
+  become: false
+
+- name: Apply labels and taints to Kubernetes node
+  kubernetes.core.k8s:
+    api_version: "v1"
+    kind:        "Node"
+    name:        "{{ inventory_hostname }}"
+    host:        "https://{{ vip_kubernetes_apiserver['internal']['fqdn'] }}"
+    api_key:     "{{ vault_k8s_token.data.data.token }}"
+    ca_cert:     "{{ vault_agent_certs_path }}/kubernetes/ca.pem"
+    validate_certs: true
+    merge_type: merge
+    definition:
+      metadata:
+        labels: "{{ kubernetes_node_labels | default({}) }}"
+      spec:
+        taints: "{{ kubernetes_node_taints | default([]) }}"
+    state: present
+  when: kubernetes_node_labels is defined or kubernetes_node_taints is defined

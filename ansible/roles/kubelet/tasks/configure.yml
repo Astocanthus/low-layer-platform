@@ -1,0 +1,41 @@
+---
+
+- name: Create kubernetes configuration directory
+  # Ensure /etc/kubernetes directory exists with secure permissions
+  ansible.builtin.file:
+    path:  "{{ kubernetes_config['path'] }}"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
+    mode:  "{{ kubernetes_config['mode'] }}"
+    state: directory
+
+- name: Create kubelet configuration directory
+  # Ensure /etc/kubelet directory exists with secure permissions
+  ansible.builtin.file:
+    path:  "{{ kubelet_config['path'] }}"
+    owner: "{{ kubelet_config['owner'] }}"
+    group: "{{ kubelet_config['group'] }}"
+    mode:  "{{ kubelet_config['mode'] }}"
+    state: directory
+
+- name: Deploy kubelet config
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ kubelet_config['owner'] }}"
+    group: "{{ kubelet_config['group'] }}"
+    mode: '0750'
+  with_items:
+    - src: "manifest/config.yaml"
+      dest: "{{ kubelet_config['path'] }}/kubelet-config.yaml"
+    - src: "conf/kubelet.conf"
+      dest: "{{ kubelet_config['path'] }}/kubelet.conf"
+  notify:
+    - Restart kubelet
+
+- name: Deploy Podman systemd unit for kubelet
+  ansible.builtin.template:
+    src: "containers/kubelet.container"
+    dest: "{{ quadlet_root_container_path }}/kubelet.container"
+  notify:
+    - Restart kubelet

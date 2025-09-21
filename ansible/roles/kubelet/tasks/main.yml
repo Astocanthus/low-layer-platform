@@ -1,0 +1,17 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+- name: Validate kubelet variables constraints
+  # Apply validate tasks
+  ansible.builtin.include_tasks: validate.yml
+
+- name: Configure kubelet
+  # Apply kubelet tasks
+  # Includes runtime and configurations
+  ansible.builtin.include_tasks: configure.yml
+
+- name: Configure node labels & taint roles
+  # Load tasks to apply labels and taints for node roles (control-plane, worker)
+  ansible.builtin.include_tasks: labeling.yml

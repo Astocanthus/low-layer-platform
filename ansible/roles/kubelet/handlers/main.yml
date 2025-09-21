@@ -1,0 +1,38 @@
+# Copyright (C) - LOW-LAYER - 2025
+# Contact : contact@low-layer.com
+
+---
+
+################################################################################
+# Handlers for systemd-managed services
+################################################################################
+
+# ============================================================================
+# Kubelet service
+# ============================================================================
+- name: Stop kubelet
+  # Stops the kubelet systemd service before reloading configuration
+  ansible.builtin.service:
+    name: kubelet
+    state: stopped
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _stop
+  until: _stop is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart kubelet
+
+- name: Start kubelet
+  # Starts and enables the kubelet systemd service
+  ansible.builtin.service:
+    name: kubelet
+    enabled: true
+    state: started
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _start
+  until: _start is success
+  retries: 5
+  delay: 10
+  listen:
+    - Restart kubelet

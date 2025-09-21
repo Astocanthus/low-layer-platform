@@ -1,0 +1,125 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+---
+
+argument_specs:
+  main:
+    short_description: "Configure kubelet for Kubernetes nodes in a containerized environment"
+    description: |
+      This role configures the Kubernetes kubelet component to run inside a container.
+      It manages pod lifecycle, communicates securely with the API server, and
+      enforces resource allocation on the node.
+
+      Usage:
+        - Configure paths for kubelet config and Kubernetes certs.
+        - Bind node IP and hostname.
+        - Set cgroup driver and container runtime endpoint.
+        - Deploy Podman systemd unit for kubelet.
+    author: "Astocanthus <contact@low-layer.com>"
+
+    options:
+      kubernetes_config:
+        type: dict
+        required: true
+        description: "Kubernetes configuration directory and ownership"
+        options:
+          path:
+            type: str
+            required: true
+            description: "Directory path for Kubernetes config files"
+          owner:
+            type: str
+            required: true
+            description: "Owner of the Kubernetes config directory"
+          group:
+            type: str
+            required: true
+            description: "Group of the Kubernetes config directory"
+          mode:
+            type: str
+            required: true
+            description: "Directory permissions in octal format"
+
+      kubelet_config:
+        type: dict
+        required: true
+        description: "Kubelet configuration directory and ownership"
+        options:
+          path:
+            type: str
+            required: true
+            description: "Directory path for kubelet config files"
+          owner:
+            type: str
+            required: true
+            description: "Owner of the kubelet config directory"
+          group:
+            type: str
+            required: true
+            description: "Group of the kubelet config directory"
+          mode:
+            type: str
+            required: true
+            description: "Directory permissions in octal format"
+
+      kubernetes_node_ip:
+        type: str
+        required: true
+        description: "Node IP address to bind kubelet"
+
+      cluster_domain:
+        type: str
+        required: true
+        description: "Cluster domain name"
+
+      kubernetes_cluster_dns_ip:
+        type: str
+        required: true
+        description: "Cluster DNS IP address"
+
+      host_resolvconf_path:
+        type: str
+        required: true
+        description: "Path to host resolv.conf"
+
+      host_container_runtime_socket:
+        type: str
+        required: true
+        description: "Container runtime socket path"
+
+      cgroup_driver:
+        type: str
+        default: "systemd"
+        choices: ["systemd", "cgroupfs"]
+        description: "Cgroup driver for kubelet"
+
+      vault_agent_certs_path:
+        type: str
+        required: true
+        description: "Path to Vault Agent certificates"
+
+      quadlet_root_container_path:
+        type: str
+        required: true
+        description: "Path for Podman systemd unit deployment"
+
+      kubernetes_version_kubelet:
+        type: str
+        required: true
+        description: "Kubernetes version to use for kubelet container"
+
+      inventory_hostname:
+        type: str
+        required: true
+        description: "Hostname of the node for kubelet registration"
+
+      kubernetes_node_labels:
+        type: dict
+        required: false
+        description: "Optional labels to apply to the Kubernetes node"
+
+      kubernetes_node_taints:
+        type: list
+        required: false
+        description: "Optional taints to apply to the Kubernetes node"
