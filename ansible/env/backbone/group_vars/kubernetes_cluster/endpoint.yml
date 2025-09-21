@@ -13,7 +13,8 @@ vip_kubernetes_apiserver:
     netmask: 24
     fqdn: "kube.low-layer.internal"
 
-
+# Node-specific IP address, dynamically retrieved from host facts
+kubernetes_node_ip: "{{ hostvars[inventory_hostname]['ansible_eno1']['ipv4']['address'] }}"
 
 # ============================================================================
 # Kubernetes API Server Configuration
@@ -29,8 +30,17 @@ kubernetes_apiserver_port: 6443
 # Kubernetes Controller Manager Configuration
 # ============================================================================
 # IP address for controller manager to bind on (for metrics and health checks)
-# Uses same IP as API server for consistency and external monitoring access
 kubernetes_controller_manager_bind_address: "{{ hostvars[inventory_hostname]['ansible_eno1']['ipv4']['address'] }}"
 
-# Secure port for controller manager metrics and health endpoints
+# Secure port for controller manager metrics and health HTTPS endpoints (/healthz, /metrics)
 kubernetes_controller_manager_secure_port: 10257
+
+# ============================================================================
+# Kubernetes Scheduler Configuration
+# ============================================================================
+# IP address for scheduler to bind on (for metrics and health checks)
+# Allows kubelet and monitoring systems to reach scheduler endpoints from other nodes
+kubernetes_scheduler_bind_address: "{{ hostvars[inventory_hostname]['ansible_eno1']['ipv4']['address'] }}"
+
+# Secure port for scheduler metrics and health HTTPS endpoints (/healthz, /metrics)
+kubernetes_scheduler_secure_port: 10259

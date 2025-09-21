@@ -11,13 +11,20 @@
   assert:
     that:
       - kubernetes_config.path is match('^/')
-      - kubelet_config.path is match('^/')
+      - kubelet_lib.path is match('^/')
       - vault_agent_certs_path is match('^/')
       - quadlet_root_container_path is match('^/')
       - host_resolvconf_path is match('^/')
-      - host_container_runtime_socket is match('^/')
+      - host_container_runtime_path is match('^/')
     fail_msg: "❌ All paths must be absolute (start with /)"
     success_msg: "✅ All paths are absolute"
+
+- name: "Validate socket path"
+  assert:
+    that:
+      - host_container_runtime_socket_path is match('^unix://')
+    fail_msg: "❌ Socket path must start with unix URI (start with unix://)"
+    success_msg: "✅ Socket path must start with unix URI"
 
 - name: "Validate node IP address"
   assert:

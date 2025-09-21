@@ -16,15 +16,15 @@
     state: directory
 
 # ============================================================================
-# Create Kubelet configuration directory
+# Create Kubelet library directory
 # ============================================================================
-- name: Create kubelet configuration directory
-  # Ensure the kubelet configuration directory exists with secure ownership and permissions
+- name: Create kubelet library directory
+  # Ensure the kubelet library directory exists with secure ownership and permissions
   ansible.builtin.file:
-    path:  "{{ kubelet_config['path'] }}"
-    owner: "{{ kubelet_config['owner'] }}"
-    group: "{{ kubelet_config['group'] }}"
-    mode:  "{{ kubelet_config['mode'] }}"
+    path:  "{{ kubelet_lib['path'] }}"
+    owner: "{{ kubelet_lib['owner'] }}"
+    group: "{{ kubelet_lib['group'] }}"
+    mode:  "{{ kubelet_lib['mode'] }}"
     state: directory
 
 # ============================================================================
@@ -35,14 +35,14 @@
   ansible.builtin.template:
     src:   "{{ item.src }}"
     dest:  "{{ item.dest }}"
-    owner: "{{ kubelet_config['owner'] }}"
-    group: "{{ kubelet_config['group'] }}"
+    owner: "{{ kubernetes_config['owner'] }}"
+    group: "{{ kubernetes_config['group'] }}"
     mode: '0750'
   with_items:
     - src:  "manifest/config.yaml"
-      dest: "{{ kubelet_config['path'] }}/kubelet-config.yaml"
-    - src: "conf/kubelet.conf"
-      dest:  "{{ kubelet_config['path'] }}/kubelet.conf"
+      dest: "{{ kubernetes_config['path'] }}/kubelet-config.yaml"
+    - src:  "conf/kubelet.conf"
+      dest: "{{ kubernetes_config['path'] }}/kubelet.conf"
   notify:
     - Restart kubelet
 

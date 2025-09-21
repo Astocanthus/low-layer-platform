@@ -41,23 +41,23 @@ argument_specs:
             required: true
             description: "Directory permissions in octal format"
 
-      kubelet_config:
+      kubelet_lib:
         type: dict
         required: true
-        description: "Kubelet configuration directory and ownership"
+        description: "Kubelet state directory and ownership"
         options:
           path:
             type: str
             required: true
-            description: "Directory path for kubelet config files"
+            description: "Directory path for kubelet states files"
           owner:
             type: str
             required: true
-            description: "Owner of the kubelet config directory"
+            description: "Owner of the kubelet states directory"
           group:
             type: str
             required: true
-            description: "Group of the kubelet config directory"
+            description: "Group of the kubelet states directory"
           mode:
             type: str
             required: true
@@ -83,7 +83,12 @@ argument_specs:
         required: true
         description: "Path to host resolv.conf"
 
-      host_container_runtime_socket:
+      host_container_runtime_path:
+        type: str
+        required: true
+        description: "Container runtime path"
+
+      host_container_runtime_socket_path:
         type: str
         required: true
         description: "Container runtime socket path"

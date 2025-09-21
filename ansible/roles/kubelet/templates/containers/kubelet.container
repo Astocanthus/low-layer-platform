@@ -89,7 +89,7 @@ PodmanArgs=--privileged --pid=host
 Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
 
 # Kubelet state directory
-Volume={{ kubelet_config['path'] }}:/var/lib/kubelet:rshared
+Volume={{ kubelet_lib['path'] }}:/var/lib/kubelet:rshared
 
 # Host runtime, resolv.conf, cgroup filesystem, kernel modules
 Volume={{ host_container_runtime_path }}:{{ host_container_runtime_path }}
@@ -98,7 +98,7 @@ Volume={{ host_cgroup_fs_path }}:{{ host_cgroup_fs_path }}:rw
 Volume={{ kernel_modules_path }}:{{ kernel_modules_path }}:ro
 
 # Certificates for secure communication with API server
-Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/ca.pem:ro
+Volume={{ vault_agent_certs_path }}/kubernetes/ca.pem:/certs/kubernetes/ca.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kubelet.pem:/certs/kubernetes/kubelet.pem:ro
 Volume={{ vault_agent_certs_path }}/kubernetes/kubelet.key:/certs/kubernetes/kubelet.key:ro
 

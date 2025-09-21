@@ -19,19 +19,19 @@ kubernetes_cluster_name: "kubernetes-low-layer"
 # Kubernetes configuration directories and ownership
 kubernetes_config: 
   path:  "/etc/kubernetes" # Base directory for Kubernetes configs (kubeconfig, manifests)
-  owner: "root"            # Owner of the directory
-  group: "root"            # Group of the directory  
+  owner: "root"
+  group: "root"
   mode:  "0750"            # Permissions (rwxr-x---)
 
 # Kubelet configuration folder
-kubelet_config: 
-  path:  "/etc/kubelet"    # Base directory for Kubelet configs (config.yaml, certificates)
-  owner: "root"            # Owner of the directory
-  group: "root"            # Group of the directory
-  mode:  "0750"            # Permissions (rwxr-x---)
+kubelet_lib: 
+  path:  "/var/lib/kubelet"    # Base directory for Kubelet state (checkpoint, plugins, etc...)
+  owner: "root"
+  group: "root"
+  mode:  "0750"                # Permissions (rwxr-x---)
 
 # ============================================================================
-# Network Configuration (CIDR Ranges)
+# Network Configuration
 # ============================================================================
 # Kubernetes pod cluster IP range (pod-to-pod communication)  
 # This is the IP range assigned to pods by the CNI plugin
@@ -44,3 +44,17 @@ kubernetes_cluster_cidr:
 kubernetes_service_cluster_ip_range_cidr:
   network: 10.96.0.0       # Default Kubernetes service range
   netmask: 12              # /12 = ~1M IPs (10.96.0.0 - 10.111.255.255)
+
+# Kubernetes DNS service IP
+# Virtual IP assigned to the kube-dns/CoreDNS service inside the cluster
+kubernetes_cluster_dns_ip: 10.96.0.10
+
+# ============================================================================
+# Cluster general configuration
+# ============================================================================
+# Cgroup driver used by the kubelet for resource management.
+# Options: systemd, cgroupfs
+cgroup_driver: "cgroupfs"
+
+# Domain name for the Kubernetes cluster
+cluster_domain: "cluster.local"

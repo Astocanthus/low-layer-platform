@@ -20,5 +20,5 @@
     - kube_apiserver              # API server installation
     - kube_controller_manager     # Manages controllers for Kubernetes objects
     - kube_scheduler              # Schedules pods across nodes
-    - cni                         # Container networking configuration
+    - kube_runtime                # Container runtime (CRI-O/CNI) configuration
     - kubelet                     # Node agent, ensures pods run properly

@@ -6,17 +6,17 @@ authentication:
   webhook:
     enabled: true
   x509:
-    clientCAFile: /certs/kubernetes/ca.pem
+    clientCAFile: "/certs/kubernetes/ca.pem"
 authorization:
   mode: Webhook
-clusterDomain: {{ cluster_domain }}
+clusterDomain: "{{ cluster_domain }}"
 clusterDNS:
 - "{{ kubernetes_cluster_dns_ip }}"
 resolvConf: "{{ host_resolvconf_path }}"
-containerRuntimeEndpoint: "{{ host_container_runtime_socket }}"
-runtimeRequestTimeout: 10m
-tlsCertFile: /certs/kubernetes/kubelet.pem
-tlsPrivateKeyFile: /certs/kubernetes/kubelet.key
+containerRuntimeEndpoint: "{{ host_container_runtime_socket_path }}"
+runtimeRequestTimeout: "10m"
+tlsCertFile: "/certs/kubernetes/kubelet.pem"
+tlsPrivateKeyFile: "/certs/kubernetes/kubelet.key"
 serverTLSBootstrap: true
 cgroupDriver: "{{ cgroup_driver }}"
 tlsCipherSuites:

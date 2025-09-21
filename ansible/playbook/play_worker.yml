@@ -15,5 +15,5 @@
   hosts: k8s_worker
   roles:
     - vault_agent        # Manages certificates and encryption keys
-    - cni                # Container networking configuration
+    - kube_runtime       # Container runtime (CRI-O/CNI) configuration
     - kubelet            # Node agent, ensures pods run properly
