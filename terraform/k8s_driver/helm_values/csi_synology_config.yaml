@@ -1,0 +1,66 @@
+# Copyright (C) - LOW-LAYER
+# Synology CSI Helm values - Storage Driver Configuration
+
+# =============================================================================
+# CLIENT AUTHENTICATION CONFIGURATION
+# =============================================================================
+# Synology NAS connection and authentication settings
+clientInfoSecret:
+  create: true
+  clients:
+    - host: nas.internal
+      port: 443
+      https: true
+
+# =============================================================================
+# CONTROLLER CONFIGURATION
+# =============================================================================
+# CSI controller deployment settings for control plane nodes
+controller:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+# =============================================================================
+# NODE CONFIGURATION
+# =============================================================================
+# CSI node driver deployment settings for all cluster nodes
+node:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  # No nodeSelector, csi-node have to run on each node
+
+# =============================================================================
+# SNAPSHOTTER CONFIGURATION
+# =============================================================================
+# Volume snapshot controller settings for control plane nodes
+snapshotter:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+# =============================================================================
+# STORAGE CLASSES CONFIGURATION
+# =============================================================================
+# Disable default storage classes for custom configuration management
+storageClasses:
+  iscsi-retain:
+    disabled: true
+  iscsi-delete:
+    disabled: true
+  nfs-delete:
+    disabled: true
+  nfs-retain:
+    disabled: true
+  smb-delete:
+    disabled: true
+  smb-retain:
+    disabled: true

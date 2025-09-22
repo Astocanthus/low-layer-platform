@@ -100,6 +100,11 @@ data "vault_generic_secret" "unifi_credentials" {
   path = "secrets/backbone/unifi/terraform_api"
 }
 
+# Retrieve Synology API credentials
+data "vault_generic_secret" "synology_credentials" {
+  path = "secrets/backbone/synology/kubernetes"
+}
+
 # -----------------------------------------------------------------------------
 # KUBERNETES PROVIDER CONFIGURATION
 # -----------------------------------------------------------------------------
