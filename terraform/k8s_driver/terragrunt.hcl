@@ -99,9 +99,6 @@ errors {
       # .* - matches any characters (including newlines)
       # This pattern catches any error message containing "i/o timeout"
       "(?s).*i/o timeout",
-      # This pattern catches any error bios value idrac slow response
-      "unable to fetch currrent bios values",
-      "Error running job",
       
       # ---------------------------------------------------------------------------
       # ADDITIONAL COMMON RETRY PATTERNS
