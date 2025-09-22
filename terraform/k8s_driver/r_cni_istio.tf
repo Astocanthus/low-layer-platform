@@ -29,9 +29,9 @@ resource "kubernetes_namespace" "istio_system" {
   metadata {
     name = "istio-system"
     labels = {
-      "app.kubernetes.io/managed-by"             = "terraform"
-      "app.kubernetes.io/component"              = "istio-system"
-      "pod-security.kubernetes.io/enforce"       = "privileged"
+      "app.kubernetes.io/managed-by"               = "terraform"
+      "app.kubernetes.io/component"                = "istio-system"
+      "pod-security.kubernetes.io/enforce"         = "privileged"
       "pod-security.kubernetes.io/enforce-version" = "latest"
     }
   }
