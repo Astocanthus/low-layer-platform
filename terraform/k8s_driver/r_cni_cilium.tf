@@ -15,7 +15,6 @@
 
 locals {
   # Network interface configurations
-  # Each interface serves a specific purpose with dedicated IP ranges and security policies
   network_interfaces = {
     eno1 = {
       interface_name = "eno1"
@@ -55,7 +54,6 @@ locals {
 # CILIUM CNI HELM DEPLOYMENT
 # -----------------------------------------------------------------------------
 # Deploys Cilium as the primary CNI provider with LoadBalancer capabilities
-# Uses external configuration file for detailed Cilium settings
 
 resource "helm_release" "cni_cilium" {
   name       = "cni-cilium"
