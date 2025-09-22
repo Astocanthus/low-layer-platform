@@ -1,0 +1,43 @@
+# Copyright (C) - LOW-LAYER
+# Istio Istiod Helm values - Control Plane Configuration
+
+# =============================================================================
+# AUTOSCALING CONFIGURATION
+# =============================================================================
+# Minimum replica count for high availability
+autoscaleMin: 2
+
+# =============================================================================
+# CNI INTEGRATION
+# =============================================================================
+# Enable integration with Istio CNI plugin
+istio_cni:
+  enabled: true
+
+# =============================================================================
+# AMBIENT MODE ENVIRONMENT CONFIGURATION
+# =============================================================================
+# Enable ambient mode features and waypoint proxy capabilities
+env:
+  PILOT_ENABLE_AMBIENT: true
+  PILOT_ENABLE_AMBIENT_WAYPOINTS: true
+
+# =============================================================================
+# GLOBAL PROXY CONFIGURATION
+# =============================================================================
+# Proxy settings for traffic interception exclusions
+global:
+  proxy:
+    excludeIPRanges: "10.96.0.1/32"
+
+# =============================================================================
+# NODE ASSIGNMENT CONFIGURATION
+# =============================================================================
+# Deploy Istiod on control plane nodes only
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""

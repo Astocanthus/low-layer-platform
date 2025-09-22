@@ -1,0 +1,9 @@
+# Copyright (C) - LOW-LAYER
+# Istio CNI Helm values - Ambient Mode Configuration
+
+# =============================================================================
+# AMBIENT MODE CONFIGURATION
+# =============================================================================
+# Enable Istio ambient mode for sidecar-less service mesh
+ambient:
+  enabled: true

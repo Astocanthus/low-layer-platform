@@ -1,0 +1,11 @@
+
+# Copyright (C) - LOW-LAYER
+# Istio ztunnel Helm values - Ambient Mode Data Plane Configuration
+
+# =============================================================================
+# AMBIENT MODE ENVIRONMENT CONFIGURATION
+# =============================================================================
+# Enable ambient mode features and waypoint proxy capabilities
+env:
+  PILOT_ENABLE_AMBIENT: true
+  PILOT_ENABLE_AMBIENT_WAYPOINTS: true
