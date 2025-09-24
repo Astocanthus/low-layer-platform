@@ -1,0 +1,25 @@
+# Copyright (C) - LOW-LAYER
+# System Descheduler Helm values - Pod Eviction and Rebalancing Configuration
+
+# =============================================================================
+# NODE ASSIGNMENT CONFIGURATION
+# =============================================================================
+# Deploy descheduler on control plane nodes only for cluster-wide management
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+
+# =============================================================================
+# RESOURCE CONFIGURATION
+# =============================================================================
+# Resource allocation for descheduler operations
+resources:
+  requests:
+    cpu: "500m"
+    memory: "256Mi"
+  limits:
+    memory: "256Mi"
