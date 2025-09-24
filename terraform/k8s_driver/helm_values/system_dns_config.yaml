@@ -1,0 +1,23 @@
+# Copyright (C) - LOW-LAYER
+# System DNS Helm values - CoreDNS Configuration
+
+# =============================================================================
+# SERVICE CONFIGURATION
+# =============================================================================
+# DNS service with fixed cluster IP for Kubernetes DNS resolution
+service:
+  clusterIP: "10.96.0.10"
+  selector: 
+    k8s-app: "coredns"
+
+# =============================================================================
+# NODE ASSIGNMENT CONFIGURATION
+# =============================================================================
+# Deploy DNS service on control plane nodes for high availability
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
