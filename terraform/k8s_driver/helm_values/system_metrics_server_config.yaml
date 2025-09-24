@@ -1,0 +1,50 @@
+# Copyright (C) - LOW-LAYER
+# System Metrics Server Helm values - Kubernetes Resource Metrics Configuration
+
+# =============================================================================
+# DEPLOYMENT CONFIGURATION
+# =============================================================================
+# High availability deployment with multiple replicas
+replicas: 2
+
+# =============================================================================
+# RESOURCE CONFIGURATION
+# =============================================================================
+# Resource allocation for metrics server operations
+resources:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
+    limits:
+      memory: "200Mi"
+
+# =============================================================================
+# ADDON RESIZER CONFIGURATION
+# =============================================================================
+# Resource allocation for the addon resizer component
+addonResizer:
+  resources:
+    requests:
+      cpu: "40m"
+      memory: "25Mi"
+    limits:
+      memory: "25Mi"
+
+# =============================================================================
+# METRICS CONFIGURATION
+# =============================================================================
+# Enable metrics collection and exposure
+metrics:
+  enabled: true
+
+# =============================================================================
+# NODE ASSIGNMENT CONFIGURATION
+# =============================================================================
+# Deploy metrics server on control plane nodes for centralized monitoring
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
