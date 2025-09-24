@@ -1,0 +1,16 @@
+# Copyright (C) - LOW-LAYER
+# System Stakater Reloader Helm values - ConfigMap and Secret Watcher Configuration
+
+# =============================================================================
+# RELOADER DEPLOYMENT CONFIGURATION
+# =============================================================================
+# Deploy reloader on control plane nodes for cluster-wide configuration monitoring
+reloader:
+  deployment:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
