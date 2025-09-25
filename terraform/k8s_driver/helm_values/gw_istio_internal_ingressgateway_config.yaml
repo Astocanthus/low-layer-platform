@@ -1,0 +1,47 @@
+# Copyright (C) - LOW-LAYER
+# Istio Internal IngressGateway Helm values - Internal Network Gateway Configuration
+
+# =============================================================================
+# GATEWAY LABELS CONFIGURATION
+# =============================================================================
+# Labels for service identification and network interface binding
+labels : 
+  app: "internal-istio-ingressgateway"
+  istio: "internal-istio-ingressgateway"
+  cilium.io/lb-interface: "eno1"
+
+# =============================================================================
+# SERVICE CONFIGURATION
+# =============================================================================
+# LoadBalancer service for internal network exposure
+service:
+  type: LoadBalancer
+
+# =============================================================================
+# DEPLOYMENT CONFIGURATION
+# =============================================================================
+# DaemonSet deployment for high availability across control plane nodes
+kind: DaemonSet
+
+# =============================================================================
+# RESOURCE CONFIGURATION
+# =============================================================================
+# Resource allocation for gateway pods
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    memory: "512Mi"
+
+# =============================================================================
+# NODE ASSIGNMENT CONFIGURATION
+# =============================================================================
+# Deploy gateway on control plane nodes only for internal network access
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
