@@ -1,0 +1,81 @@
+# Copyright (C) - LOW-LAYER
+# Kubernetes Dashboard Helm values - Web UI Management Interface Configuration
+
+# =============================================================================
+# WEB INTERFACE CONFIGURATION
+# =============================================================================
+# High availability web interface deployment
+web:
+  scaling:
+    replicas: 2
+
+# =============================================================================
+# API CONFIGURATION
+# =============================================================================
+# Enable API backend for dashboard functionality
+api:
+  enabled: true
+
+# =============================================================================
+# KONG PROXY CONFIGURATION
+# =============================================================================
+# Kong ingress controller with TLS termination
+kong:
+  enabled: true
+  proxy:
+    type: ClusterIP
+    http:
+      enabled: false
+  env:
+    ssl_cert: /etc/secrets/dashboard-tls-internal/certificate
+    ssl_cert_key: /etc/secrets/dashboard-tls-internal/private_key
+  secretVolumes: [
+    "dashboard-tls-internal"
+  ]
+  deploymentAnnotations: 
+    "reloader.stakater.com/auto": "true"
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+# =============================================================================
+# APPLICATION CONFIGURATION
+# =============================================================================
+# Dashboard application settings and deployment configuration
+app:
+  settings:
+    global:
+      itemsPerPage: 20
+      namespaceFallbackList:
+      - default
+  scheduling:
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+# =============================================================================
+# METRICS SCRAPER CONFIGURATION
+# =============================================================================
+# Metrics collection component for dashboard monitoring
+metricsScraper:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      memory: 400Mi
+
+# =============================================================================
+# MONITORING CONFIGURATION
+# =============================================================================
+# ServiceMonitor configuration for Prometheus integration
+extras:
+  serviceMonitor:
+    enabled: false
