@@ -138,28 +138,3 @@ resource "kubernetes_manifest" "vault_pki" {
     }
   }
 }
-
-# Futur proof
-
-# resource "vault_kubernetes_auth_backend_role" "vault_operator" {
-#   backend                          = var.auth_mount
-#   role_name                        = "vault-operator-${var.namespace}-${var.pki_name}-${var.pki_role}"
-#   bound_service_account_names      = [kubernetes_service_account.vault_operator.metadata[0].name]
-#   bound_service_account_namespaces = [var.namespace]
-#   token_ttl                        = 0
-#   token_period                     = 120
-#   token_policies                   = [vault_policy.vault_operator.name]
-#   audience                         = var.audience
-# }
-
-# resource "vault_pki_secret_backend_cert" "certs" {
-#   for_each = { for cert in var.certificates : cert.secretName => cert }
-
-#   backend       = var.pki_name
-#   name          = each.value.cn
-#   common_name   = each.value.cn
-#   alt_names     = each.value.altNames
-#   ttl           = each.value.ttl
-#   format        = each.value.format
-#   expiry        = each.value.expiryOffset != "" ? each.value.expiryOffset : null
-# }
