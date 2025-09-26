@@ -6,11 +6,7 @@
 # =============================================================================
 # Synology NAS connection and authentication settings
 clientInfoSecret:
-  create: true
-  clients:
-    - host: nas.internal
-      port: 443
-      https: true
+  create: false
 
 # =============================================================================
 # CONTROLLER CONFIGURATION

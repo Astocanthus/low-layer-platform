@@ -16,14 +16,19 @@ locals {
   synology_config = {
     chart_version = "0.10.1"
     repository    = "https://christian-schlichtherle.github.io/synology-csi-chart"
-    namespace     = "kube-system"
-    timeout       = 150
+    namespace     = "csi-synology"
+    timeout       = 20
   }
 
   # Storage location mapping for different storage tiers
   storage_locations = {
     hdd = "/volume1"  # HDD-based storage volume
     ssd = "/volume2"  # SSD-based storage volume
+  }
+
+  csi_secret_names = {
+    client_info = "synology-csi-client-info"
+    smb_info    = "smb-csi-credentials"
   }
 
   # Common storage class parameters
@@ -33,26 +38,64 @@ locals {
 }
 
 # -----------------------------------------------------------------------------
+# CSI SYNOLOGY NAMESPACE
+# -----------------------------------------------------------------------------
+# Dedicated namespace for csi synology with Istio injection enabled
+
+resource "kubernetes_namespace" "csi_synology" {
+  metadata {
+    name = local.synology_config.namespace
+    labels = {
+      "app.kubernetes.io/managed-by"               = "terraform"
+      "app.kubernetes.io/component"                = "synology"
+      "istio-injection"                            = "enabled"
+      "pod-security.kubernetes.io/enforce"         = "privileged"
+      "pod-security.kubernetes.io/enforce-version" = "latest"
+    }
+  }
+}
+
+# -----------------------------------------------------------------------------
 # CSI CREDENTIALS SECRET
 # -----------------------------------------------------------------------------
 # Store Synology NAS authentication credentials securely
 
-resource "kubernetes_secret" "csi_credentials" {
-  metadata {
-    name      = "csi-credentials"
-    namespace = local.synology_config.namespace
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
-      "app.kubernetes.io/component"  = "synology-csi"
+module "synology_csi_secret" {
+  source     = "../_modules/vso_secrets"
+  namespace  = kubernetes_namespace.csi_synology.metadata[0].name
+  auth_mount = "kubernetes-low-layer"
+  audience   = "kube.low-layer.internal"
+
+  secrets = [{
+    name    = local.csi_secret_names.client_info
+    mount   = "secrets"
+    path    = "backbone/synology/kubernete-low-layer"
+    version = 1
+    transformation = {
+      excludes = [
+        "username",
+        "password"
+      ]
+      templates = {
+        "client-info.yaml" = {
+          text = <<EOF
+            {{- printf "clients: \n" -}}
+            {{- printf "- host: nas.internal \n" -}}
+            {{- printf "  port: 5000 \n"  -}}
+            {{- printf "  https: false \n"  -}}
+            {{- printf "  username: %s \n" (get .Secrets "username") -}}
+            {{- printf "  password: %s" (get .Secrets "password") -}}
+          EOF
+        }
+      }
     }
-  }
-
-  data = {
-    username = data.vault_generic_secret.synology_credentials.data["username"]
-    password = data.vault_generic_secret.synology_credentials.data["password"]
-  }
-
-  type = "Opaque"
+  },
+  {
+    name    = local.csi_secret_names.smb_info
+    mount   = "secrets"
+    path    = "backbone/synology/kubernete-low-layer"
+    version = 1
+  }]
 }
 
 # -----------------------------------------------------------------------------
@@ -64,7 +107,7 @@ resource "helm_release" "csi_synology" {
   name       = "synology-csi"
   repository = local.synology_config.repository
   chart      = "synology-csi"
-  namespace  = local.synology_config.namespace
+  namespace  = kubernetes_namespace.csi_synology.metadata[0].name
   version    = local.synology_config.chart_version
   timeout    = local.synology_config.timeout
 
@@ -73,25 +116,14 @@ resource "helm_release" "csi_synology" {
     file("helm_values/csi_synology_config.yaml")
   ]
 
-  # Set authentication credentials dynamically
-  set {
-    name  = "clientInfoSecret.clients[0].username"
-    value = kubernetes_secret.csi_credentials.data.username
-  }
-
-  set {
-    name  = "clientInfoSecret.clients[0].password"
-    value = kubernetes_secret.csi_credentials.data.password
-  }
-
   # Ensure proper cleanup order
-  wait          = true
-  wait_for_jobs = true
+  wait            = true
+  wait_for_jobs   = true
   cleanup_on_fail = true
 
   depends_on = [
     helm_release.cni_cilium,
-    kubernetes_secret.csi_credentials
+    module.synology_csi_secret.kubernetes_manifest
   ]
 }
 
@@ -193,8 +225,8 @@ resource "kubernetes_storage_class" "synology_smb_hdd" {
   parameters = merge(local.common_parameters, {
     location = local.storage_locations.hdd
     protocol = "smb"
-    "csi.storage.k8s.io/node-stage-secret-name"      = kubernetes_secret.csi_credentials.metadata[0].name
-    "csi.storage.k8s.io/node-stage-secret-namespace" = kubernetes_secret.csi_credentials.metadata[0].namespace
+    "csi.storage.k8s.io/node-stage-secret-name"      = local.csi_secret_names.smb_info
+    "csi.storage.k8s.io/node-stage-secret-namespace" = kubernetes_namespace.csi_synology.metadata[0].name
   })
 
   depends_on = [helm_release.csi_synology]
@@ -229,8 +261,8 @@ resource "kubernetes_storage_class" "synology_smb_ssd" {
   parameters = merge(local.common_parameters, {
     location = local.storage_locations.ssd
     protocol = "smb"
-    "csi.storage.k8s.io/node-stage-secret-name"      = kubernetes_secret.csi_credentials.metadata[0].name
-    "csi.storage.k8s.io/node-stage-secret-namespace" = kubernetes_secret.csi_credentials.metadata[0].namespace
+    "csi.storage.k8s.io/node-stage-secret-name"      = local.csi_secret_names.smb_info
+    "csi.storage.k8s.io/node-stage-secret-namespace" = kubernetes_namespace.csi_synology.metadata[0].name
   })
 
   depends_on = [helm_release.csi_synology]
