@@ -13,7 +13,7 @@ clusterDomain: "{{ cluster_domain }}"
 clusterDNS:
 - "{{ kubernetes_cluster_dns_ip }}"
 resolvConf: "{{ host_resolvconf_path }}"
-containerRuntimeEndpoint: "{{ host_container_runtime_socket_path }}"
+containerRuntimeEndpoint: "{{ runtime_crio_socket_path }}"
 runtimeRequestTimeout: "10m"
 tlsCertFile: "/certs/kubernetes/kubelet.pem"
 tlsPrivateKeyFile: "/certs/kubernetes/kubelet.key"

@@ -83,12 +83,12 @@ argument_specs:
         required: true
         description: "Path to host resolv.conf"
 
-      host_container_runtime_path:
+      runtime_crio_path:
         type: str
         required: true
         description: "Container runtime path"
 
-      host_container_runtime_socket_path:
+      runtime_crio_socket_path:
         type: str
         required: true
         description: "Container runtime socket path"

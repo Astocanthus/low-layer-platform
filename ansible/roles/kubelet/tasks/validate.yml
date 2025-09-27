@@ -15,14 +15,14 @@
       - vault_agent_certs_path is match('^/')
       - quadlet_root_container_path is match('^/')
       - host_resolvconf_path is match('^/')
-      - host_container_runtime_path is match('^/')
+      - runtime_crio_path is match('^/')
     fail_msg: "❌ All paths must be absolute (start with /)"
     success_msg: "✅ All paths are absolute"
 
 - name: "Validate socket path"
   assert:
     that:
-      - host_container_runtime_socket_path is match('^unix://')
+      - runtime_crio_socket_path is match('^unix://')
     fail_msg: "❌ Socket path must start with unix URI (start with unix://)"
     success_msg: "✅ Socket path must start with unix URI"
 

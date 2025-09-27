@@ -92,9 +92,9 @@ Volume={{ kubernetes_config['path'] }}:/etc/kubernetes:ro
 Volume={{ kubelet_lib['path'] }}:/var/lib/kubelet:rshared
 
 # Host runtime, resolv.conf, cgroup filesystem, kernel modules
-Volume={{ host_container_runtime_path }}:{{ host_container_runtime_path }}
+Volume={{ runtime_crio_path }}:{{ runtime_crio_path }}
 Volume={{ host_resolvconf_path }}:{{ host_resolvconf_path }}:ro
-Volume={{ host_cgroup_fs_path }}:{{ host_cgroup_fs_path }}:rw
+Volume={{ runtime_cgroup_fs_path }}:{{ runtime_cgroup_fs_path }}:rw
 Volume={{ kernel_modules_path }}:{{ kernel_modules_path }}:ro
 
 # Certificates for secure communication with API server
