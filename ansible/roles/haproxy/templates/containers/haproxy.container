@@ -17,6 +17,9 @@ Requires=haproxy.service
 Image=docker.io/haproxy:lts-alpine3.22
 ContainerName=haproxy
 
+# ============================================================================
+# Command Execution
+# ============================================================================
 # Merge all config fragments before launching HAProxy
 Exec=sh -c "cat /etc/haproxy/conf.d/*.cfg > /tmp/haproxy.cfg && haproxy -Ws -db -f /tmp/haproxy.cfg"
 
