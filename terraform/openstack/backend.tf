@@ -1,0 +1,44 @@
+# Copyright (C) - LOW-LAYER
+# Contact : contact@low-layer.com
+
+# =============================================================================
+# TERRAFORM BACKEND CONFIGURATION
+# =============================================================================
+# Configures remote state storage using HashiCorp Consul for team collaboration
+# and state persistence across deployments
+
+terraform {
+
+  # -----------------------------------------------------------------------------
+  # CONSUL BACKEND CONFIGURATION
+  # -----------------------------------------------------------------------------
+  # Uses Consul KV store for centralized state management
+  # Provides automatic state locking and team collaboration features
+
+  backend "consul" {
+    path    = "states/k8s-cluster/low-layer/openstack"
+    address = "https://consul.internal"
+    scheme  = "https"
+    lock    = true
+    gzip    = true
+  }
+}
+
+# =============================================================================
+# BACKEND CONFIGURATION NOTES
+# =============================================================================
+#
+# State Path Organization:
+# - states/backbone/          # Infrastructure backbone components
+# - states/vault/             # Infrastructure vault components
+# - states/k8s_cluster/       # Cluster K8S deployments
+# - states/applications/      # Application deployments
+#
+# Security Considerations:
+# - Configure Consul ACLs with appropriate permissions
+# - Implement TLS client certificates for enhanced security
+#
+# Backup Strategy:
+# - Consul provides built-in replication and backup capabilities
+# - Consider periodic state exports: terraform state pull > backup.tfstate
+# - Implement automated backup schedules for disaster recovery
