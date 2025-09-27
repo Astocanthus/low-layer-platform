@@ -51,8 +51,8 @@ resource "helm_release" "istio_base" {
   timeout    = local.istio_config.timeout
 
   # Ensure proper cleanup order
-  wait          = true
-  wait_for_jobs = true
+  wait            = true
+  wait_for_jobs   = true
   cleanup_on_fail = true
 
   depends_on = [helm_release.cni_cilium]
@@ -104,8 +104,8 @@ resource "helm_release" "istiod" {
   ]
 
   # Ensure proper cleanup order
-  wait          = true
-  wait_for_jobs = true
+  wait            = true
+  wait_for_jobs   = true
   cleanup_on_fail = true
 
   depends_on = [helm_release.istio_base]
@@ -130,8 +130,8 @@ resource "helm_release" "istio_cni" {
   ]
 
   # Ensure proper cleanup order
-  wait          = true
-  wait_for_jobs = true
+  wait            = true
+  wait_for_jobs   = true
   cleanup_on_fail = true
   
   depends_on = [helm_release.istio_base]
@@ -156,8 +156,8 @@ resource "helm_release" "istio_ztunnel" {
   ]
 
   # Ensure proper cleanup order
-  wait          = true
-  wait_for_jobs = true
+  wait            = true
+  wait_for_jobs   = true
   cleanup_on_fail = true
 
   depends_on = [helm_release.istio_base]
