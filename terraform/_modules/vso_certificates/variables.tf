@@ -5,7 +5,7 @@
 # VAULT PKI CERTIFICATE MANAGEMENT VARIABLES
 # =============================================================================
 # This file defines the variables required for PKI certificate management
-# through Vault in a Kubernetes cluster
+# through Vault Secret Operator (VSO) in a Kubernetes cluster
 
 # -----------------------------------------------------------------------------
 # KUBERNETES CONFIGURATION
