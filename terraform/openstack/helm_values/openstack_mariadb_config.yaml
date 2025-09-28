@@ -1,0 +1,54 @@
+# Copyright (C) - LOW-LAYER
+# OpenStack MariaDB Helm values - Database Management Configuration
+
+# =============================================================================
+# POD CONFIGURATION
+# =============================================================================
+# Database pod deployment and security settings
+pod:
+  # Single replica deployment for database consistency
+  replicas:
+    server: 1
+  
+  # Security context configuration for MariaDB containers
+  security_context:
+    server:
+      container:
+        perms:
+          readOnlyRootFilesystem: false
+        mariadb:
+          runAsUser: 0
+          allowPrivilegeEscalation: true
+          readOnlyRootFilesystem: false
+  
+  # Scheduling constraints for control plane deployment
+  tolerations:
+    mariadb:
+      enabled: true
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: "NoSchedule"
+
+# =============================================================================
+# STORAGE CONFIGURATION
+# =============================================================================
+# Persistent volume configuration for database data
+volume:
+  size: 25Gi
+  class_name: synology-iscsi-ssd
+
+# =============================================================================
+# MONITORING CONFIGURATION
+# =============================================================================
+# Prometheus metrics collection settings
+monitoring:
+  prometheus:
+    enabled: false
+
+# =============================================================================
+# NETWORK POLICY CONFIGURATION
+# =============================================================================
+# Kubernetes network policy manifest generation
+manifests:
+  network_policy: false
