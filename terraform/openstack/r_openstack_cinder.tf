@@ -122,10 +122,6 @@ resource "unifi_dns_record" "dns_openstack_cinder" {
   record_type = "A"
   ttl         = 3600
   value       = local.cinder_config.loadbalancer_ip
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # -----------------------------------------------------------------------------
