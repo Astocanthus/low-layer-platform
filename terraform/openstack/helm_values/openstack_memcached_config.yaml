@@ -1,0 +1,20 @@
+# Copyright (C) - LOW-LAYER
+# OpenStack Memcached Helm values - In-Memory Caching Service Configuration
+
+# =============================================================================
+# POD CONFIGURATION
+# =============================================================================
+# Memcached deployment and scheduling settings
+pod:
+  # Single replica deployment for consistent caching layer
+  replicas:
+    server: 1
+  
+  # Control plane scheduling constraints and tolerations
+  tolerations:
+    memcached:
+      enabled: true
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: "NoSchedule"
