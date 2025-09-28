@@ -44,9 +44,4 @@ resource "kubernetes_config_map" "general_bin" {
     for filename in fileset(local.configmap_config.source_path, "*") : 
       filename => file("${local.configmap_config.source_path}/${filename}")
   }
-
-  # Lifecycle management for script updates
-  lifecycle {
-    create_before_destroy = true
-  }
 }
