@@ -2,10 +2,10 @@
 # Contact : contact@low-layer.com
 
 # =============================================================================
-# OPENSTACK MODULES CONFIGURATION VARIABLES
+# OPENSTACK GENERAL MODULE CONFIGURATION VARIABLES
 # =============================================================================
-# Variables for OpenStack service modules deployment and RBAC configuration
-# Defines namespaces, service accounts, roles and bindings for OpenStack components
+# Variables for OpenStack general services configuration and deployment
+# Defines service endpoints, namespaces and infrastructure dependencies
 
 # -----------------------------------------------------------------------------
 # OPENSTACK MODULES DEPLOYMENT CONFIGURATION
@@ -165,7 +165,7 @@ variable "timeout" {
 # -----------------------------------------------------------------------------
 # LOCAL COMPUTED VALUES
 # -----------------------------------------------------------------------------
-# Computed configurations derived from input variables for RBAC and service management
+# Computed configurations derived from input variables for service management
 
 locals {
   # OpenStack credential environment variables for service authentication
@@ -188,9 +188,6 @@ locals {
     for config in var.openstack_modules_config : config.namespace
   ])
 
-  # -----------------------------------------------------------------------------
-  # SERVICE ACCOUNT CONFIGURATION
-  # -----------------------------------------------------------------------------
   # Standard OpenStack service accounts for various operational tasks
   sa_list = [
     "openstack-db-init",
@@ -213,9 +210,6 @@ locals {
     ]
   ])
 
-  # -----------------------------------------------------------------------------
-  # RBAC ROLE CONFIGURATION FOR NAMESPACES
-  # -----------------------------------------------------------------------------
   # Role definitions for OpenStack service operations within namespaces
   role_list = {
     openstack-db-sync = {
@@ -274,9 +268,6 @@ locals {
     ]
   ])
 
-  # -----------------------------------------------------------------------------
-  # RBAC CONFIGURATION FOR INFRASTRUCTURE SERVICES
-  # -----------------------------------------------------------------------------
   # Cross-namespace access roles for infrastructure services
   role_infrastructure = {    
     openstack-infrastructure-services-db-init = {
@@ -317,9 +308,6 @@ locals {
     ]
   }
 
-  # -----------------------------------------------------------------------------
-  # RBAC CONFIGURATION FOR KEYSTONE SERVICES
-  # -----------------------------------------------------------------------------
   # Cross-namespace access roles for Keystone identity service
   role_keystone = {    
     openstack-keystone-services-ks-service = {
