@@ -14,11 +14,11 @@
 
 locals {
   horizon_config = {
-    namespace         = "openstack-horizon"
-    service_name      = "horizon"
-    domain_name       = "horizon.low-layer.internal"
-    internal_domain   = "horizon-web.openstack-horizon.svc.cluster.local"
-    loadbalancer_ip   = data.kubernetes_service.internal_lb.status.0.load_balancer.0.ingress.0.ip
+    namespace          = "openstack-horizon"
+    service_name       = "horizon"
+    domain_name        = "horizon.low-layer.internal"
+    internal_domain    = "horizon-web.openstack-horizon.svc.cluster.local"
+    loadbalancer_ip    = data.kubernetes_service.internal_lb.status.0.load_balancer.0.ingress.0.ip
     deployment_timeout = "5m"
     certificate_ttl    = "24h"
     certificate_offset = "1h"

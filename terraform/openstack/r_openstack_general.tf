@@ -86,12 +86,4 @@ module "openstack_general" {
     helm_release.openstack_memcached,
     module.openstack_keystone
   ]
-
-  # Module metadata
-  tags = {
-    "app.kubernetes.io/managed-by" = "terraform"
-    "app.kubernetes.io/component"  = "openstack-general"
-    "app.kubernetes.io/part-of"    = "openstack"
-    "terraform.io/module"          = "os_general"
-  }
 }
