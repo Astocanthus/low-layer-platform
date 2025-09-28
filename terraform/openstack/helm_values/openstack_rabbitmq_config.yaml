@@ -1,0 +1,28 @@
+# Copyright (C) - LOW-LAYER
+# OpenStack RabbitMQ Helm values - Message Broker Service Configuration
+
+# =============================================================================
+# POD CONFIGURATION
+# =============================================================================
+# RabbitMQ deployment and scheduling settings
+pod:
+  # Single replica deployment for message broker consistency
+  replicas:
+    server: 1
+  
+  # Control plane scheduling constraints and tolerations
+  tolerations:
+    rabbitmq:
+      enabled: true
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: "NoSchedule"
+
+# =============================================================================
+# STORAGE CONFIGURATION
+# =============================================================================
+# Persistent volume configuration for message queue persistence
+volume:
+  class_name: "synology-iscsi-ssd"
+  size: 25Gi
