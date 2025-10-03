@@ -121,15 +121,40 @@ resource "kubernetes_cron_job_v1" "keystone_fernet_rotate" {
                 }
               }
 
-              env { name = "INTERFACE_NAME" value = "eth0" }
-              env { name = "PATH" value = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/" }
-              env { name = "DEPENDENCY_JOBS" value = "keystone-fernet-setup" }
+              env { 
+                name = "INTERFACE_NAME" 
+                value = "eth0" 
+              }
 
-              env { name = "DEPENDENCY_SERVICE" }
-              env { name = "DEPENDENCY_DAEMONSET" }
-              env { name = "DEPENDENCY_CONTAINER" }
-              env { name = "DEPENDENCY_POD_JSON" }
-              env { name = "DEPENDENCY_CUSTOM_RESOURCE" }
+              env { 
+                name = "PATH" 
+                value = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/" 
+              }
+
+              env { 
+                name = "DEPENDENCY_JOBS" 
+                value = "keystone-fernet-setup" 
+              }
+
+              env { 
+                name = "DEPENDENCY_SERVICE" 
+              }
+
+              env { 
+                name = "DEPENDENCY_DAEMONSET" 
+              }
+              
+              env { 
+                name = "DEPENDENCY_CONTAINER" 
+              }
+
+              env { 
+                name = "DEPENDENCY_POD_JSON" 
+              }
+
+              env { 
+                name = "DEPENDENCY_CUSTOM_RESOURCE" 
+              }
 
               resources {}
 
