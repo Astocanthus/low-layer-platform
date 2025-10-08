@@ -15,7 +15,7 @@
 # These accounts are granted RBAC roles to access Kubernetes resources
 
 locals {
-  horizon_service_accounts = [
+  service_accounts = [
     "horizon",
     "horizon-db-init",
     "horizon-db-sync",
@@ -28,7 +28,7 @@ locals {
   # Purpose: Defines RBAC roles applied to Horizon operations
   # Structure: Maps role names to RBAC permissions (groups, resources, verbs)
 
-  horizon_roles = {
+  roles = {
     openstack-horizon = {
       api_groups = ["", "extensions", "batch", "apps"]
       resources  = ["jobs", "pods"]
@@ -52,7 +52,7 @@ locals {
   # Purpose: Binds Horizon roles to their respective service accounts
   # Structure: Maps role identifier to list of associated service accounts
 
-  horizon_role_bindings = {
+  role_bindings = {
     openstack-horizon = [
       "horizon"
     ],
@@ -70,7 +70,7 @@ locals {
   # Purpose: Grants Horizon access to shared infrastructure services
   # Used for communication with services like MariaDB, etc. across namespaces
 
-  horizon_infra_roles = {
+  role_infrastructure = {
     openstack-infrastructure-horizon = {
       api_groups = ["", "extensions", "batch", "apps"]
       resources  = ["services", "endpoints"]
@@ -94,7 +94,7 @@ locals {
   # Purpose: Maps infrastructure roles to Horizon service accounts
   # Enables Horizon components to communicate with shared infrastructure
 
-  horizon_infra_role_bindings = {
+  role_binding_infrastructure = {
     openstack-infrastructure-horizon = [
       "horizon"
     ],
@@ -112,7 +112,7 @@ locals {
   # Purpose: Grants Horizon access to Keystone service endpoints
   # Used to register dashboard with identity service via cross-namespace access
 
-  horizon_keystone_roles = {
+  keystone_roles = {
     openstack-keystone-horizon = {
       api_groups = ["", "extensions", "batch", "apps"]
       resources  = ["services", "endpoints"]
@@ -126,7 +126,7 @@ locals {
   # Purpose: Maps Keystone access roles to Horizon service account
   # Enables Horizon to retrieve identity-related resources for registration
 
-  horizon_keystone_role_bindings = {
+  keystone_role_bindings = {
     openstack-keystone-horizon = [
       "horizon"
     ]
