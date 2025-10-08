@@ -39,7 +39,7 @@ resource "kubernetes_service_account" "horizon" {
 # application namespace.
 
 resource "kubernetes_role" "horizon" {
-  for_each = local.roles
+  for_each = local.rbac_roles
 
   metadata {
     name      = each.key
@@ -68,7 +68,7 @@ resource "kubernetes_role" "horizon" {
 # application namespace.
 
 resource "kubernetes_role_binding" "horizon" {
-  for_each = local.role_bindings
+  for_each = local.rbac_role_bindings
 
   metadata {
     name      = each.key
@@ -106,7 +106,7 @@ resource "kubernetes_role_binding" "horizon" {
 # Defines Roles used by Horizon to access shared infrastructure services.
 
 resource "kubernetes_role" "horizon_infrastructure" {
-  for_each = local.role_infrastructure
+  for_each = local.rbac_role_infrastructure
 
   metadata {
     name      = each.key
@@ -135,7 +135,7 @@ resource "kubernetes_role" "horizon_infrastructure" {
 # from the application namespace.
 
 resource "kubernetes_role_binding" "horizon_infrastructure" {
-  for_each = local.role_binding_infrastructure
+  for_each = local.rbac_role_binding_infrastructure
 
   metadata {
     name      = each.key
@@ -173,7 +173,7 @@ resource "kubernetes_role_binding" "horizon_infrastructure" {
 # Defines Roles granting Horizon scoped access to Keystone namespace APIs.
 
 resource "kubernetes_role" "horizon_keystone" {
-  for_each = local.keystone_roles
+  for_each = local.rbac_keystone_roles
 
   metadata {
     name      = each.key
@@ -202,7 +202,7 @@ resource "kubernetes_role" "horizon_keystone" {
 # from the keystone_namespace.
 
 resource "kubernetes_role_binding" "horizon_keystone" {
-  for_each = local.keystone_role_bindings
+  for_each = local.rbac_keystone_role_bindings
 
   metadata {
     name      = each.key
