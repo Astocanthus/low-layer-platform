@@ -1,0 +1,4 @@
+# This sudoers file supports rootwrap for both Kolla and LOCI Images.
+Defaults !requiretty
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/var/lib/openstack/bin:/var/lib/kolla/venv/bin"
+glance ALL = (root) NOPASSWD: /var/lib/kolla/venv/bin/glance-rootwrap /etc/glance/rootwrap.conf *, /var/lib/openstack/bin/glance-rootwrap /etc/glance/rootwrap.conf *
