@@ -20,17 +20,20 @@
     * Integrate **Ceph** using the **Rook** operator.
     * Scope: Manage data for the pilot cluster (etcd, Kube services) AND provide storage for tenant sub-clusters (Cinder volumes, Swift objects, etc.).
 
-#### Axis 4: OpenStack Control Plane Refactor (Core Project)
-* **Objective:** Replace the current `openstack-helm` implementation with a modern, "Kube-native," multi-tenant control plane.
+#### Axis 4: OpenStack Deployment & Orchestration (Core Project)
+* **Objective:** Deploy OpenStack natively via Terraform for custom integration, and use `k-orc` for tenant resource orchestration.
 * **Actions:**
-    * **Integrate `k-orc`** (Kube-OpenStack-Resource-Controller) as the central orchestration component.
-        * *Note: Requires upstream contribution (project is new, scope must be extended).*
-    * **Secret Management Security:** Complete replacement of clear-text secrets (from `openstack-helm`) with secure injection via the **Vault Secrets Operator (VSO)**.
-    * **Develop a custom Controller / OpenStack Module** (TBD) for "sub-cluster" (cluster-as-a-service) management.
-    * **Target Sub-Cluster Architecture:**
-        * The tenant cluster `dataplane` will be isolated in dedicated **client namespaces** on the main control plane.
-        * The tenant cluster `control plane` will be deployed (by the custom controller) onto OpenStack resources (VMs).
-        * The custom controller will leverage `k-orc` to orchestrate the creation of OpenStack resources required for these sub-clusters (workers, networks).
+    * **Native Terraform Deployment:**
+        * Re-implement the OpenStack deployment (currently based on `openstack-helm`) **natively in Terraform**.
+        * This custom implementation is critical for deep integration with **Vault** (for secrets) and the **immutable OS** (for virtualization components). The Helm charts serve only as a functional baseline to be corrected and replaced.
+    * **Secret Management Security:** During the Terraform re-implementation, completely replace all clear-text secrets with secure injection via the **Vault Secrets Operator (VSO)**.
+    * **Tenant Resource Orchestration:**
+        * Integrate **`k-orc`** (Kube-OpenStack-Resource-Controller) as the "driver" for orchestrating tenant *requests* (e.g., "create VM", "create storage") against the OpenStack platform. `k-orc` does **not** deploy OpenStack itself.
+        * *Note: Requires upstream contribution to `k-orc` (project is new, scope must be extended).*
+    * **"Cluster-as-a-Service" Controller:**
+        * Develop a **custom Kubernetes controller** for managing tenant "sub-clusters".
+        * This controller will orchestrate the `control plane` of tenant clusters (as VMs on OpenStack) and their `dataplane` (isolated in namespaces on the main pilot cluster).
+        * This custom controller will **use `k-orc`** as its interface to request the necessary OpenStack resources (VMs, networks) for the tenant clusters.
 
 #### Axis 5: Platform Layer & Commercialization
 * **Objective:** Expose services as "turnkey" products and manage commercial licensing.
