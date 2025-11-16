@@ -6,6 +6,7 @@
     * Migrate base service configurations (networking, `systemd`) from Ansible to **Ignition**.
     * Create a custom, re-compiled Fedora CoreOS base image to "bake-in" static packages (e.g., Vault agent, base binaries).
     * Ansible's (or the Vault agent's) role will be restricted to fetching dynamic secrets/configs (certificates, etc.) from the "core" Vault instance.
+    * **[NEW] Implement full SELinux configuration:** Plan the transition from the current "permissive" mode (prioritizing functionality) to "enforcing" by defining and applying all necessary system policies.
 
 #### Axis 2: System Runtime Unification
 * **Objective:** Standardize the management of all host-level containerized services.
@@ -20,7 +21,7 @@
     * Integrate **Ceph** using the **Rook** operator.
     * Scope: Manage data for the pilot cluster (etcd, Kube services) AND provide storage for tenant sub-clusters (Cinder volumes, Swift objects, etc.).
 
-#### Axis 4: OpenStack Deployment & Orchestration (Core Project)
+#### Axis 4: OpenStack Deployment & Orchestration
 * **Objective:** Deploy OpenStack natively via Terraform for custom integration, and use `k-orc` for tenant resource orchestration.
 * **Actions:**
     * **Native Terraform Deployment:**
@@ -35,7 +36,13 @@
         * This controller will orchestrate the `control plane` of tenant clusters (as VMs on OpenStack) and their `dataplane` (isolated in namespaces on the main pilot cluster).
         * This custom controller will **use `k-orc`** as its interface to request the necessary OpenStack resources (VMs, networks) for the tenant clusters.
 
-#### Axis 5: Platform Layer & Commercialization
+#### Axis 5: Cluster Security Hardening
+* **Objective:** Implement a "Zero Trust" security posture at the cluster and network level.
+* **Actions:**
+    * ** Implement Cilium Network Policies:** Move beyond basic CNI connectivity and define a comprehensive set of network policies to strictly control pod-to-pod communication (firewalling).
+    * ** Eliminate Privileged Pods:** Audit all deployed components (especially OpenStack compute nodes) and refactor them to run without `privileged: true` security contexts, replacing them with granular capabilities and security contexts.
+
+#### Axis 6: Platform Layer & Commercialization
 * **Objective:** Expose services as "turnkey" products and manage commercial licensing.
 * **Actions:**
     * **License Management (Core):**
@@ -44,4 +51,9 @@
     * **Application Platform (PaaS):**
         * Develop a service layer (potentially via a UI) for rapid application deployment ("software factory," CNaaS).
         * The backend for this UI will leverage pre-packaged **Terraform** modules to provision and connect services (clusters, DBs, etc.).
-        * This layer will integrate license pre-selection for service deployment opensource & free to use compatibility.
+        * This layer will integrate license pre-selection for service deployment.
+    * **Prepare for AI/GPU Integration:**
+        * Architect a "placeholder" within the platform to integrate GPU hardware support (e.g., NVIDIA device plugins for Kubernetes).
+        * **Target AI Platform:** The goal is to enable an SME-focused (PME) platform for:
+            * Partial/Custom model training (fine-tuning).
+            * Multi-GPU inference, fully orchestrated by Kubernetes.
