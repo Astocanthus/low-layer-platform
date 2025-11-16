@@ -44,4 +44,4 @@
     * **Application Platform (PaaS):**
         * Develop a service layer (potentially via a UI) for rapid application deployment ("software factory," CNaaS).
         * The backend for this UI will leverage pre-packaged **Terraform** modules to provision and connect services (clusters, DBs, etc.).
-        * This layer will integrate license pre-selection (see previous point) for service deployment.
+        * This layer will integrate license pre-selection for service deployment opensource & free to use compatibility.
